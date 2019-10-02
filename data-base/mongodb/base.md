@@ -11,9 +11,20 @@ Mongo 来源于 Humongous 意为「庞大」
 
 MongoDB 是一个基于分布式文件存储的开源文档数据库。由 C++ 语言编写。旨在为 Web 应用提供高性能、高可用性和高伸缩数据存储解决方案。
 
+## 术语
+
+| 关系型数据库术语 | MongoDB 术语 | 说明                                      |
+| ---------------- | ------------ | ----------------------------------------- |
+| database         | database     | 数据库                                    |
+| table            | collection   | 数据库表/集合                             |
+| row              | document     | 记录行/文档                               |
+| column           | fIeld        | 数据字段/域                               |
+| index            | index        | 索引                                      |
+| primary key      | primary key  | 主键，MongoDB 自动将 `_id` 字段设置为主键 |
+
 ## 使用场景
 
-![MongoDB优点](../../snaptshots/mongodb-advantage.png)
+![MongoDB优点](../../snapshots/mongodb-advantage.png)
 
 - **数据缓存**：由于性能很高，MongoDB 适合作为信息基础设施的缓存层。在系统重启之后，由 MongoDB 搭建的持久化缓存层可以避免下层的数据源过载。
 - **对象和 JSON 存储**：MongoDB 的 BSON(二进制 JSON)数据格式非常适合文档化格式的存储及查询,而且 JSON 格式存储最接近真实对象模型，对开发者友好，方便快速开发迭代,灵活的模式让你不在为了不断变化的需求而去频繁修改数据库字段和结构。
