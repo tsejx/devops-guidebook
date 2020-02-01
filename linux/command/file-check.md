@@ -1,4 +1,13 @@
-# 文本查看
+# 文本查阅
+
+- cat 由第一行开始显示文件内容
+- tac 从最后一行开始显示文件内容
+- nl 显示的事后，顺道输出行号
+- more 一页一页地显示文件内容
+- less 与 more 相似，但是比 more 更好的是，他可以往前翻页
+- head 只看头几行
+- tail 只看尾巴几行
+- od 以二进制的方式读取文件内容
 
 ## 查看文件
 
@@ -75,3 +84,6 @@ grep -rn --color Exception -A10 -B2 error.log
 ### diff
 
 diff 命令用来比较两个文件是否的差异。当然，在 ide 中都提供了这个功能，diff 只是命令行下的原始折衷。对了，diff 和 patch 还是一些平台源码的打补丁方式，你要是不用，就 pass 吧。
+
+
+http://www.phpxs.com/j/linux/1000213/
