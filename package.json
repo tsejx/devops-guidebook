@@ -1,0 +1,32 @@
+{
+  "name": "devops-guidebook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "yarn run dumi dev",
+    "build": "yarn run dumi build",
+    "deploy": "bash ./scripts/deploy.bash",
+    "lint:md": "lint-md *.md",
+    "lint:fix": "lint-md *.md --fix",
+    "commit": "git-cz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsejx/devops-guidebook.git"
+  },
+  "keywords": [
+    "devops",
+    "documentation"
+  ],
+  "author": "tsejx",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tsejx/devops-guidebook/issues"
+  },
+  "homepage": "https://github.com/tsejx/devops-guidebook#readme",
+  "devDependencies": {
+    "dumi": "^1.0.8",
+    "lint-md": "^0.1.1"
+  }
+}
