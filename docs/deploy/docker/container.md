@@ -28,8 +28,17 @@ $ docker run -it centos /bin/bash # 示例
 $ docker ps
 ```
 
+常见的启动参数：
+
+- `-p`：向宿主机暴露端口，格式 `宿主机端口:容器端口`
+- `-P`：将容器端口映射为宿主机的随机端口
 - `-t`：让 Docker 分配一个伪终端（pseudo-tty）并绑定到容器的标准输入上
 - `-i`：让容器的标准输入保持打开
+- `-v`：映射数据卷，例如 `/home/project:/usr/src`，宿主机 `/home/project` 映射容器 `/usr/src`
+- `-d`：将容器放在后台运行
+- `--rm`：容器推出后清除资源
+- `--privileged`：最高权限
+
 
 当利用 `docker run` 来创建容器时，Docker 在后台运行的标准操作包括：
 

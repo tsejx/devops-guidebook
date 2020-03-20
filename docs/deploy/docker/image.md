@@ -132,6 +132,8 @@ $ docker rmi 7ba3cc636d5f
 $ docker build -t <image-name>:v1 .
 ```
 
+## 导入导出镜像
+
 ### 压缩包导入
 
 除了标准的使用 Dockerfile 生成镜像的方法外，由于各种特殊需求和历史原因，还提供了一些其它方法用以生成镜像。
@@ -163,4 +165,42 @@ $ docker image ls <image-name>
 
 # 保存镜像
 $ docker save <image-name> -o filename
+```
+
+### 导出镜像
+
+```bash
+# 查询官方镜像
+$ docker search java
+
+# 获取镜像
+$ docker pull java
+
+# 导入镜像
+$ docker save java > /home/java.tar.gz
+
+# 导出镜像
+$ docker load < /home/java.tar.gz
+
+# 移除镜像
+$ docker rmi java
+```
+
+## 上传镜像
+
+```bash
+# 先到 https://hub.docker.com/ 注册账号，保存账户密码
+
+# 控制台登录 dockerhub 账户
+$ docker login
+
+# 查看镜像
+$ docker images
+
+# 选择需要上传的镜像，重命名为指定的格式
+# name 为镜像名称 new-name 为自己镜像起的名称 v1 为任意设置的版本号
+$ docker tag <name> username/<new-name>:v1
+
+# 提交镜像到自己的仓库
+$ docker push username/<new-name>:v1
 ```
