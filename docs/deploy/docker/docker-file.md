@@ -189,6 +189,21 @@ ENV 指令有两种形式。
 
 注意，第二种形式在语法中使用等号 `=`，而第一种形式不使用。与命令行解析类似，引号和反斜杠可用于在值内包含空格。
 
+更多示例：
+
+```dockerfile
+FROM node
+ENV API_URL=google.com \
+        NODE_ENV=production
+    COMMAND=dev
+RUN yarn
+CMD yarn ${COMMAND}
+```
+
+启动时运行 `docker run --rm -e COMMAND=start -e API_URL=development node`
+
+或者要执行的命令复杂的话，可以用 shell script 包在 image 里面，再依照 `NODE_ENV` 写入需要的环境变量。
+
 ## ADD
 
 ```dockerfile
