@@ -13,6 +13,15 @@ order: 3
 
 Dockerfile 是由一系列命令和参数构成的脚本，一个 Dockerfile 里面包含了构建整个 Image 的完整命令。Docker 通过 `docker build` 执行 Dockerfile 中的一系列命令自动构建 Image。
 
+一般地，Dockerfile 分为四部分：基础镜像信息、维护者信息、镜像操作指令和容器启动时执行指令。
+
+| 部分               | 指令                      |
+| ------------------ | ------------------------- |
+| 基础镜像信息       | FROM                      |
+| 维护者信息         | MAINTAINER                |
+| 镜像操作指令       | RUN、COPY、ADD、EXPOSE 等 |
+| 容器启动时执行指令 | CMD、ENTRYPOINT           |
+
 [Dockerfile 最佳实践](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
 
 ## 使用方法
@@ -116,116 +125,21 @@ FROM：FROM 是构建镜像的基础源镜像（Base Image）。因此，有效�
 
 详细说明：Dockerfile 中 FROM 是必备的指令，并且必须是第一条指令！ 它引入一个镜像作为我们要构建镜像的基础层，就好像我们首先要安装好操作系统，才可以在操作系统上面安装软件一样。
 
-## RUN
-
-RUN：后面跟的是在容器中要执行的命令。有两种形式：
-
-- `RUN <command>` shell 形式，命令在 Shell 中运行，Linux 上为 `/bin/sh/ -c`，Windows 上为 `cmd /S/C`
-- `RUN ["executable", "param1", "param2"]` exec 形式
-
-详细说明：每一个 `RUN` 指令都会新建立一层，在其上执行这些命令，我们频繁使用 `RUN` 指令会创建大量镜像层，然而 `Union FS` 是有最大层数限制的，不能超过 `127` 层，而且我们应该把每一层中我用文件清除，比如一些没用的依赖，来防止镜像臃肿。
-
-## CMD
-
-`CMD` 指令有三种形式：
+## MAINTAINER
 
 ```dockerfile
-# exec form
-CMD ["executable", "param1", "param2"]
-
-# shell form
-CMD command param1 param2
-
-# as default parameters to ENTRYPOINT
-CMD ["param1", "param2"]
+MAINTAINER <name>
 ```
 
-在 Dockerfile 中只能有一个 `CMD` 指令。如果您列出多个 `CMD`，则只有最后一个 `CMD` 将生效。
-
-CMD 后面的命令是容器每次启动执行的命令，多个命令之间可以使用 && 链接，例如 CMD git pull && npm start。
-
-容器中的应用都应该以前台执行，而不是启动后台服务，容器内没有后台服务的概念。 对于容器而言，其启动程序就是容器应用进程，容器就是为了主进程而存在的，主进程退出，容器就失去了存在的意义。 比如 `CMD service nginx start` 它等同于 `CMD [ "bash", "-c", "service nginx start"]` 主进程实际上是 `bash`，`bash` 也就结束了，`bash` 作为主进程退出了。
-
-## LABEL
-
-```dockerfile
-LABEL <key>=<value> <key>=<value> <key>=<value> ...
-```
-
-`LABEL` 指令向 Image 添加元数据。`LABEL` 是键值对。要在 `LABEL` 值中包含空格，请使用引号和反斜杠，就像在命令行解析中一样：
-
-```dockerfile
-LABEL "com.example.vendor"="ACME Incorporated"
-LABEL com.example.label-with-value="foo"
-LABEL version="1.0"
-LABEL description="This text illustrates \
-that label-values can span multiple lines."
-```
-
-Image 可以有多个 Label。要指定多个 Label，Docker 建议在可能的情况下将标签合并到单个 `LABEL` 指令中。每个 `LABEL` 指令产生一个新层，如果使用许多标签，可能会导致效率低下的图像。该示例产生单个图像层。
-
-```dockerfile
-LABEL multi.label1="value1" multi.label2="value2" other="value3"
-```
-
-标签是添加的，包括 `LABEL` 在 `FROM images` 中。如果 Docker 遇到已经存在的 `label/key`，则新值将覆盖具有相同键的任何先前标签。
-
-要查看 Image 的 labels，请使用 `docker inspect` 命令。
-
-## ENV
-
-```dockerfile
-ENV <key> <value>
-
-ENV <key>=<value> ...
-```
-
-ENV 指令将环境变量 `<key>` 设置为值 `<value>`。
-
-ENV 指令有两种形式。
-
-- 第一种形式，`ENV <key> <value>`，将单个变量设置为一个值。第一个空格后面的整个字符串将被视为 `<value>` - 包括空格和引号等字符。
-- 第二种形式，`ENV <key> = <value> ...`，允许一次设置多个变量。
-
-注意，第二种形式在语法中使用等号 `=`，而第一种形式不使用。与命令行解析类似，引号和反斜杠可用于在值内包含空格。
-
-更多示例：
-
-```dockerfile
-FROM node
-ENV API_URL=google.com \
-        NODE_ENV=production
-    COMMAND=dev
-RUN yarn
-CMD yarn ${COMMAND}
-```
-
-启动时运行 `docker run --rm -e COMMAND=start -e API_URL=development node`
-
-或者要执行的命令复杂的话，可以用 shell script 包在 image 里面，再依照 `NODE_ENV` 写入需要的环境变量。
-
-## ADD
-
-```dockerfile
-ADD <src> <dest>
-
-# 对于包含空格的路径，此形式是必需的
-ADD ["<src>", ..., "<dest>"]
-```
-
-`ADD` 指令从 `<src>` 复制到新文件，目录或远程文件 `URL`，并将它们添加到容器的文件系统，路径 `<dest>`。
-
-`ADD` 遵守以下规则：
-
-- `<src>` 路径必须在构建的上下文中;你不能 `ADD ../something /something`，因为 Docker 构建的第一步是发送上下文目录（和子目录）到 Docker 守护进程。如果 `<src>` 是 `URL` 并且 `<dest>` 不以尾部斜杠结尾，则从 `URL` 下载文件并将其复制到 `<dest>`。如果 `<src>` 是 `URL` 并且 `<dest>` 以尾部斜杠结尾，则从 `URL` 中推断文件名，并将文件下载到 `<dest>/<filename>`。例如，`ADD http://example.com/foobar /` 会创建文件 `/ foobar`。网址必须有一个非平凡的路径，以便在这种情况下可以发现一个适当的文件名（`http://example.com` 不会工作）。如果 `<src>` 是目录，则复制目录的整个内容，包括文件系统元数据。
+`MAINTAINER` 指令允许您设置生成的 Images 的作者字段
 
 ## WORKDIR
+
+`WORKDIR` 指令为 Dockerfile 中的任何 `RUN`、`CMD`、`ENTRYPOINT`、`COPY` 和 `ADD` 指令设置工作目录。
 
 ```dockerfile
 WORKDIR /path/to/workdir
 ```
-
-`WORKDIR` 指令为 Dockerfile 中的任何 `RUN`、`CMD`、`ENTRYPOINT`、`COPY` 和 `ADD` 指令设置工作目录。
 
 如果 `WORKDIR` 不存在，它将会被创建，即使它没有任何后续的 Dockerfile 指令中使用。
 
@@ -254,43 +168,37 @@ RUN pwd
 
 `pwd` 命令在该 Dockerfile 中输出的最后结果是 `/path/$DIRNAME`。
 
-## COPY
-
-拷贝文件至容器的工作目录下，.dockerignore 指定的文件不会拷贝
+## ENV
 
 ```dockerfile
-COPY <src> .. <dest>
+ENV <key> <value>
 
-COPY ["<src>", ..., "<dest>"]
+ENV <key>=<value> ...
 ```
 
-与 ADD 类似，不过 `COPY` 的 `<src>` 不能为 URL。
+ENV 指令将环境变量 `<key>` 设置为值 `<value>`。
 
-## EXPOSE
+ENV 指令有两种形式。
+
+- 第一种形式，`ENV <key> <value>`，将单个变量设置为一个值。第一个空格后面的整个字符串将被视为 `<value>` - 包括空格和引号等字符。
+- 第二种形式，`ENV <key> = <value> ...`，允许一次设置多个变量。
+
+注意，第二种形式在语法中使用等号 `=`，而第一种形式不使用。与命令行解析类似，引号和反斜杠可用于在值内包含空格。
+
+更多示例：
 
 ```dockerfile
-EXPOSE <port> [<port>...]
+FROM node
+ENV API_URL=google.com \
+    NODE_ENV=production
+    COMMAND=dev
+RUN yarn
+CMD yarn ${COMMAND}
 ```
 
-`EXPOSE` 指令通知 Docker 容器在运行时侦听指定的网络端口。`EXPOSE` 不使主机的容器的端口可访问。为此，必须使用 `-p` 标志发布一系列端口，或者使用 `-P` 标志发布所有暴露的端口。您可以公开一个端口号，并用另一个端口号在外部发布。
+启动时运行 `docker run --rm -e COMMAND=start -e API_URL=development node`
 
-要在主机系统上设置端口重定向，请参阅 [使用 `-P` 标志](https://docs.docker.com/engine/reference/run/#expose-incoming-ports)。Docker 网络功能支持创建网络，无需在网络中公开端口，有关详细信息，请参阅 [网络通信功能的概述](https://docs.docker.com/engine/userguide/networking/)。
-
-## ENTRYPOINT
-
-```dockerfile
-ENTRYPOINT ["executable", "param1", "param2"]
-
-ENTRYPOINT command param1 param2
-```
-
-`ENTRYPOINT` 允许您配置容器，运行执行的可执行文件。
-
-例如，以下将使用其默认内容启动 Nginx，侦听端口 80：
-
-```bash
-$ docker run -it --rm -p 80:80 nginx
-```
+或者要执行的命令复杂的话，可以用 shell script 包在 image 里面，再依照 `NODE_ENV` 写入需要的环境变量。
 
 ## ARG
 
@@ -360,21 +268,278 @@ $ docker build Dockerfile
 
 `ARG` 变量不会持久化到构建的 Image 中，因为 `ENV` `变量是。但是，ARG` 变量会以类似的方式影响构建缓存。如果一个 Dockerfile 定义一个 `ARG` 变量，它的值不同于以前的版本，那么在它的第一次使用时会出现一个 `“cache miss”`，而不是它的定义。特别地，在 `ARG` 指令之后的所有 RUN 指令都隐式地使用 `ARG` 变量（作为环境变量），因此可能导致高速缓存未命中。
 
+## RUN
+
+RUN：后面跟的是在容器中要执行的命令。有两种形式：
+
+- `RUN <command>` shell 形式，命令在 Shell 中运行，Linux 上为 `/bin/sh/ -c`，Windows 上为 `cmd /S/C`
+- `RUN ["executable", "param1", "param2"]` exec 形式
+
+详细说明：每一个 `RUN` 指令都会新建立一层，在其上执行这些命令，我们频繁使用 `RUN` 指令会创建大量镜像层，然而 `Union FS` 是有最大层数限制的，不能超过 `127` 层，而且我们应该把每一层中我用文件清除，比如一些没用的依赖，来防止镜像臃肿。
+
+## ADD
+
+```dockerfile
+ADD <src> <dest>
+
+# 对于包含空格的路径，此形式是必需的
+ADD ["<src>", ..., "<dest>"]
+```
+
+`ADD` 指令从 `<src>` 复制到新文件，目录或远程文件 `URL`，并将它们添加到容器的文件系统，路径 `<dest>`。
+
+`ADD` 遵守以下规则：
+
+- `<src>` 路径必须在构建的上下文中;你不能 `ADD ../something /something`，因为 Docker 构建的第一步是发送上下文目录（和子目录）到 Docker 守护进程。如果 `<src>` 是 `URL` 并且 `<dest>` 不以尾部斜杠结尾，则从 `URL` 下载文件并将其复制到 `<dest>`。如果 `<src>` 是 `URL` 并且 `<dest>` 以尾部斜杠结尾，则从 `URL` 中推断文件名，并将文件下载到 `<dest>/<filename>`。例如，`ADD http://example.com/foobar /` 会创建文件 `/ foobar`。网址必须有一个非平凡的路径，以便在这种情况下可以发现一个适当的文件名（`http://example.com` 不会工作）。如果 `<src>` 是目录，则复制目录的整个内容，包括文件系统元数据。
+
+## COPY
+
+拷贝文件至容器的工作目录下，.dockerignore 指定的文件不会拷贝
+
+```dockerfile
+COPY <src> .. <dest>
+
+COPY ["<src>", ..., "<dest>"]
+```
+
+与 ADD 类似，不过 `COPY` 的 `<src>` 不能为 URL。
+
+## EXPOSE
+
+```dockerfile
+EXPOSE <port> [<port>...]
+```
+
+`EXPOSE` 指令通知 Docker 容器在运行时侦听指定的网络端口。`EXPOSE` 不使主机的容器的端口可访问。为此，必须使用 `-p` 标志发布一系列端口，或者使用 `-P` 标志发布所有暴露的端口。您可以公开一个端口号，并用另一个端口号在外部发布。
+
+要在主机系统上设置端口重定向，请参阅 [使用 `-P` 标志](https://docs.docker.com/engine/reference/run/#expose-incoming-ports)。Docker 网络功能支持创建网络，无需在网络中公开端口，有关详细信息，请参阅 [网络通信功能的概述](https://docs.docker.com/engine/userguide/networking/)。
+
+## ENTRYPOINT
+
+`ENTRYPOINT` 允许您配置容器，运行执行的可执行文件。
+
+```dockerfile
+# 使用 exec 执行
+ENTRYPOINT ["executable", "param1", "param2"]
+
+# 使用 shell 执行
+ENTRYPOINT command param1 param2
+```
+
+每个 Dockerfile 中只能有一个 ENTRYPOINT，当指定多个时，只有最后一个起效。
+
+例如，以下将使用其默认内容启动 Nginx，侦听端口 80：
+
+```bash
+$ docker run -it --rm -p 80:80 nginx
+```
+
+## CMD
+
+`CMD` 指令有三种形式：
+
+```dockerfile
+# 使用 exec 执行，推荐方式
+# 这类格式在解析时会被解析为 JSON 数组，因此一定要使用双引号
+CMD ["executable", "param1", "param2"]
+
+# 在 /bin/sh 中执行，提供给需要交互的应用
+# 实际命令会被包装为 sh -c 的参数形式进行执行
+CMD command param1 param2
+
+# 提供给 ENTRYPOINT 的默认参数
+CMD ["param1", "param2"]
+```
+
+示例：
+
+```dockerfile
+# shell
+CMD echo $HOME
+
+# 转化为 exec 即
+CMD ["sh", "-c", "echo $HOME"]
+```
+
+指定启动容器时执行命令，每个 Dockerfile 只能有一个 `CMD` 指令。如果指定了多条命令，则只有最后一条会被执行。
+
+如果用户启动容器时候指定了运行的命令，则会覆盖掉 CMD 指定的命令。
+
+CMD 后面的命令是容器每次启动执行的命令，多个命令之间可以使用 `&&` 链接，例如 `CMD git pull && npm start`。
+
+容器中的应用都应该以前台执行，而不是启动后台服务，容器内没有后台服务的概念。 对于容器而言，其启动程序就是容器应用进程，容器就是为了主进程而存在的，主进程退出，容器就失去了存在的意义。 比如 `CMD service nginx start` 它等同于 `CMD [ "bash", "-c", "service nginx start"]` 主进程实际上是 `bash`，`bash` 也就结束了，`bash` 作为主进程退出了。
+
+### 传递参数
+
+#### 固定参数
+
+Dockerfile 如下：
+
+```dockerfile
+FROM python:2.7-slim
+
+COPY startup.sh /opt
+
+RUN chmod +x /opt/startup.sh
+
+ARG envType=xxx
+ENV envType ${envType}
+
+CMD ["/opt/startup.sh", "foo"]
+```
+
+构建并启动：
+
+```bash
+# docker build
+docker build -t yellow:1.0 --build-arg envType=dev .
+
+# docker run
+docker run -it --rm=true yellow:1.0
+```
+
+#### 动态参数
+
+[Docker Documentation：CMD](https://docs.docker.com/engine/reference/builder/#cmd)
+
+- `exec` 形式的 `CMD`，是 docker 来运行命令，是不支持参数替换的
+- `shell` 形式的 `CMD`，是 docker 来运行 `sh`，`sh` 再运行我们写的命令，而 `sh` 是支持参数替换的
+
+Dockerfile 最后一行：
+
+```dockerfile
+CMD /opt/startup.sh ${envType}
+```
+
+构建并启动：
+
+```bash
+# docker build
+docker build -t yellow:4.0 --build-arg envType=dev .
+
+# docker run
+docker run -ti --rm=true yellow:4.0
+```
+
+### 与 ENTRYPOINT 对比
+
+共同点：
+
+1. 都可以指定 Shell 或 exec 函数调用的方式执行命令
+2. 当存在多个 `CMD` 指令或 `ENTRYPOINT` 指令时，只有最后一个生效
+
+差异：
+
+1. `CMD` 指令指定的容器启动时命令可以被 `docker run` 指定的命令覆盖，而 `ENTRYPOINT` 指令指定的命令不能被覆盖，而是将 `docker run` 指定的参数当做 `ENTRYPOINT` 指定命令的参数
+
+2. `CMD` 指令可以为 `ENTRYPOINT` 指令设置默认参数，而且可以被 `docker run` 指定的参数覆盖
+
+总结：
+
+- 如果 ENTRYPOINT 使用了 shell 模式，CMD 指令会被忽略
+- 如果 ENTRYPOINT 使用了 exec 模式，CMD 指定的内容被追加为 ENTRYPOINT 指定命令的参数
+- 如果 ENTRYPOINT 使用了 exec 模式，CMD 也应该使用 exec 模式
+
+`exec` 模式是建议的使用模式，因为当运行任务的进程作为容器中的 1 号进程时，我们可以通过 docker 的 stop 命令优雅地结束容器。
+
+### EXEC 模式的缺陷
+
+⚠️ **注意：** `exec` 模式不能使用环境变量。因为 `exec` 模式的特点是不会通过 shell 执行相关的命令。
+
+🌰 **示例：Shell 模式**
+
+```bash
+$ cat Dockerfile
+FROM oraclelinux
+
+ADD ./docker-entry.sh   /docker-entry.sh
+
+ENV VAR Hello
+
+ENTRYPOINT  "/docker-entry.sh" "${VAR}"
+
+$ docker run --rm testimage
+Entry of ENTRYPOINT, ARGS[#]=1
+ENTRYPOINT ARGS[0]=[/docker-entry.sh]
+ENTRYPOINT ARGS[1]=[Hello]
+$@=[Hello]
+```
+
+🌰 **示例：EXEC 模式**
+
+```bash
+$ cat Dockerfile
+FROM oraclelinux
+
+ADD ./docker-entry.sh   /docker-entry.sh
+
+ENV VAR Hello
+
+ENTRYPOINT  [ "/docker-entry.sh", "${VAR}" ]
+
+$ docker run --rm testimage
+Entry of ENTRYPOINT, ARGS[#]=1
+ENTRYPOINT ARGS[0]=[/docker-entry.sh]
+ENTRYPOINT ARGS[1]=[${VAR}]
+$@=[${VAR}]
+```
+
+这个环境变量 `$VAR` 没有被替换掉，而是源文本的方式穿下去了。
+
+解决这个问题的办法使用 `"bash -c"` 来调用 ENTRYPOINT 指令：
+
+🌰 **示例：EXEC 模式**
+
+```bash
+$ cat Dockerfile
+FROM oraclelinux
+
+ADD ./docker-entry.sh   /docker-entry.sh
+
+ENV VAR Hello
+
+ENTRYPOINT  [ "/bin/bash", "-c", "/docker-entry.sh ${VAR}" ]
+
+$ docker run --rm testimage
+Entry of ENTRYPOINT, ARGS[#]=1
+ENTRYPOINT ARGS[0]=[/docker-entry.sh]
+ENTRYPOINT ARGS[1]=[Hello]
+$@=[Hello]
+```
+
 ## VOLUME
 
 `VOLUME` 指令创建具有指定名称的挂载点，并将其标记为从本机主机或其他容器保留外部挂载的卷。该值可以是 JSON 数组 `VOLUME ["/var/log"]` 或具有多个参数的纯字符串，例如 `VOLUME /var/log` 或 `VOLUME /var/log /var/db`。
 
 ## USER
 
-`USER` 指令设置运行 Image 时使用的用户名或 UID，以及 Dockerfile 中的任何 RUN，`CMD` 和 `ENTRYPOINT` 指令。
+`USER` 指令设置运行 Image 时使用的用户名或 UID，以及 Dockerfile 中的任何 `RUN`、`CMD` 和 `ENTRYPOINT` 指令。
 
-## MAINTAINER
+## LABEL
 
 ```dockerfile
-MAINTAINER <name>
+LABEL <key>=<value> <key>=<value> <key>=<value> ...
 ```
 
-`MAINTAINER` 指令允许您设置生成的 Images 的作者字段
+`LABEL` 指令向 Image 添加元数据。`LABEL` 是键值对。要在 `LABEL` 值中包含空格，请使用引号和反斜杠，就像在命令行解析中一样：
+
+```dockerfile
+LABEL "com.example.vendor"="ACME Incorporated"
+LABEL com.example.label-with-value="foo"
+LABEL version="1.0"
+LABEL description="This text illustrates \
+that label-values can span multiple lines."
+```
+
+Image 可以有多个 Label。要指定多个 Label，Docker 建议在可能的情况下将标签合并到单个 `LABEL` 指令中。每个 `LABEL` 指令产生一个新层，如果使用许多标签，可能会导致效率低下的图像。该示例产生单个图像层。
+
+```dockerfile
+LABEL multi.label1="value1" multi.label2="value2" other="value3"
+```
+
+标签是添加的，包括 `LABEL` 在 `FROM images` 中。如果 Docker 遇到已经存在的 `label/key`，则新值将覆盖具有相同键的任何先前标签。
+
+要查看 Image 的 labels，请使用 `docker inspect` 命令。
 
 ---
 
@@ -383,3 +548,4 @@ MAINTAINER <name>
 - [📝 Dockerfile 和 Docker Compose file 参考文档](https://juejin.im/post/5d9c0224f265da5b76373451)
 - [如何编写最佳的 Dockerfile](https://juejin.im/post/5922e07cda2f60005d602dcd)
 - [Dockerfile 最佳实践指南：构建缓存部分](https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/#build-cache)
+- [Dockerfile 中的 CMD 与 ENTRYPOINT](https://www.cnblogs.com/sparkdev/p/8461576.html)
