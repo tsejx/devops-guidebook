@@ -275,7 +275,7 @@ RUN：后面跟的是在容器中要执行的命令。有两种形式：
 - `RUN <command>` shell 形式，命令在 Shell 中运行，Linux 上为 `/bin/sh/ -c`，Windows 上为 `cmd /S/C`
 - `RUN ["executable", "param1", "param2"]` exec 形式
 
-详细说明：每一个 `RUN` 指令都会新建立一层，在其上执行这些命令，我们频繁使用 `RUN` 指令会创建大量镜像层，然而 `Union FS` 是有最大层数限制的，不能超过 `127` 层，而且我们应该把每一层中我用文件清除，比如一些没用的依赖，来防止镜像臃肿。
+⚠️ **注意**：每一个 `RUN` 指令都会新建立一层，在其上执行这些命令，当运行多个指令时，会产生一些非常臃肿、非常多层的镜像，不仅仅增加了构建部署的时间，也很容易出错因此，在很多情况下，我们可以合并指令并运行，例如 `RUN apt-get update && apt-get install -y libgdiplus`。在命令过多时，一定要注意格式，比如换行、缩进、注释等，会让维护、排障更为容易。除此之外，`Union FS` 是有最大层数限制的，不能超过 `127` 层，而且我们应该把每一层中我用文件清除，比如一些没用的依赖，来防止镜像臃肿。
 
 ## ADD
 
@@ -286,7 +286,11 @@ ADD <src> <dest>
 ADD ["<src>", ..., "<dest>"]
 ```
 
-`ADD` 指令从 `<src>` 复制到新文件，目录或远程文件 `URL`，并将它们添加到容器的文件系统，路径 `<dest>`。
+ADD 指令与 COPY 指令非常类似，但它包含更多功能。除了将文件从主机复制到容器映像，ADD 指令还可以使用 URL 规范从远程位置复制文件。
+
+```bash
+ADD https://www.python.org/ftp/python/3.5.1/python-3.5.1.exe /temp/python-3.5.1.exe
+```
 
 `ADD` 遵守以下规则：
 
@@ -294,7 +298,7 @@ ADD ["<src>", ..., "<dest>"]
 
 ## COPY
 
-拷贝文件至容器的工作目录下，.dockerignore 指定的文件不会拷贝
+拷贝文件至容器的工作目录下，`.dockerignore` 指定的文件不会拷贝。
 
 ```dockerfile
 COPY <src> .. <dest>
@@ -303,6 +307,8 @@ COPY ["<src>", ..., "<dest>"]
 ```
 
 与 ADD 类似，不过 `COPY` 的 `<src>` 不能为 URL。
+
+如果源或目标包含空格，请将路径括在方括号和双引号中。
 
 ## EXPOSE
 
@@ -546,6 +552,6 @@ LABEL multi.label1="value1" multi.label2="value2" other="value3"
 **参考资料：**
 
 - [📝 Dockerfile 和 Docker Compose file 参考文档](https://juejin.im/post/5d9c0224f265da5b76373451)
-- [如何编写最佳的 Dockerfile](https://juejin.im/post/5922e07cda2f60005d602dcd)
-- [Dockerfile 最佳实践指南：构建缓存部分](https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/#build-cache)
-- [Dockerfile 中的 CMD 与 ENTRYPOINT](https://www.cnblogs.com/sparkdev/p/8461576.html)
+- [📝 如何编写最佳的 Dockerfile](https://juejin.im/post/5922e07cda2f60005d602dcd)
+- [📝 Dockerfile 最佳实践指南：构建缓存部分](https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/#build-cache)
+- [📝 Dockerfile 中的 CMD 与 ENTRYPOINT](https://www.cnblogs.com/sparkdev/p/8461576.html)

@@ -98,7 +98,7 @@ $ docker system off
 $ docker image ls -f dangling=true
 
 # 一般虚悬镜像已经失去存在的价值，可以随意删除
-$ docker image prue
+$ docker image prune
 ```
 
 查看中间层镜像：

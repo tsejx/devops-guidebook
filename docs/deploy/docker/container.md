@@ -13,6 +13,20 @@ order: 4
 
 简单的说，容器是独立运行的一个或一组应用，以及它们的运行态环境。对应的，虚拟机可以理解为模拟运行的一整套操作系统（提供了运行态环境和其他系统环境）和跑在上面的应用。
 
+## 生命周期
+
+这是一张容器运行的状态流转图：
+
+```jsx | inline
+import React from 'react';
+import img from '../../assets/docker/container-running-flow.jpg';
+
+export default () => <img alt="容器状态流转图" src={img} width="900" />;
+```
+
+
+图中展示了几种常见对 Docker 容器的操作命令，以及执行它们之后容器运行状态的变化。这里我们撇开命令，着重看看容器的几个核心状态，也就是图中色块表示的：**Created**、**Running**、**Paused**、**Stopped**、**Deleted**。
+
 ## 启动容器
 
 启动容器方式有两种，一种是基于镜像新建容器并启动，另一种是将在终止状态（`stopped`）的容器重新启动。
