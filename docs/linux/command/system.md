@@ -28,6 +28,11 @@ order: 1
   - `at` 在指定时间执行一个任务
   - `crontab` 提交和管理用户的需要周期性执行的任务
 - 用户和工作组
+  - `useradd` 新建用户
+  - `userdel` 删除用户
+  - `passwod` 修改用户密码
+  - `usermod` 修改用户属性
+  - `chage` 修改用户属性
   - `change` 修改账号和密码的有效期限
   - `id` 显示用户的 ID 以及所属群组的 ID
   - `su` 用于切换当前用户身份到其他用户身份
@@ -141,83 +146,110 @@ ps aux | grep nginx
 
 ## 用户和工作组
 
-### su
+只有 `root` 用户采用创建/删除/修改用户的权限。
 
-su 用来切换用户。比如你现在是 root，想要用 xjj 用户做一些勾当，就可以使用 su 切换。
+### useradd
 
 ```bash
-su xjj
+# 创建用户，名为 user1
+useradd user1
 
-su - xjj
+# 新建用户 user2 时，直接指定组 group1
+useradd -g group1 user2
+
+# 创建新用户，用户不允许登录（通过 ftp 可以连接）
+adduser ftpusername -s /sbin/nologin
+```
+
+### userdel
+
+```bash
+# 永久性删除用户账号 user1（保留用户数据）
+userdel user1
+
+# 彻底永久性删除用户账号 user2（及其 home 目录下的数据）
+userdel -r user2
+```
+
+### usermod
+
+修改用户账号的相对应信息。
+
+```bash
+# 修改用户 home 目录地址（放到 ben1 目录下）
+usermode -d /home/ben1 user1
+
+# 将 user1 的用户组改为 group1
+usermode -group1 user1
+```
+
+### groupadd
+
+```bash
+# 新建用户组
+groupadd
+
+# 新建用户组 group1
+groupadd group1
+```
+
+### groupdel
+
+```bash
+# 永久性删除用户工作组 group1
+groupdel group1
+```
+
+### groupmode
+
+```bash
+# 修改用户组
+groupmod
+```
+
+### passwd
+
+```bash
+# 为用户 ben 设置密码
+passwd ben
+
+# 为当前用户修改密码
+passwd
+```
+
+### su
+
+su 用来切换用户。比如你现在是 root，想要用 `ben` 用户做一些勾当，就可以使用 su 切换。
+
+```bash
+# 切换到 ben 用户（使用 login shell 方式切换用户）
+su - ben
+
+# 不完全切换（不带减号）
+su ben
 ```
 
 可以让你干净纯洁的降临另一个账号，不出意外，推荐。
 
-## 其他
+### sudo
+
+sudo 以其他用户身份执行命令
 
 ```bash
-# 查看系统中所有用户
-cut -d : -f 1 /etc/passwd
+# 设置需要使用 sudo 的用户（组）
+visudo
+```
 
-# 查看可以登录系统的用户
-cat /etc/passwd | grep -v /sbin/nologin | cut -d : -f 1
+### id
 
-# 查看登录用户
-who
+查看用户信息及所属组别。
 
-# 查看某一用户
-w mysql
+```bash
+# 查看名为 ben 的用户信息
+id ben
+```
 
-# 查看用户登录历史记录
-last
-
-# 创建新用户
-adduser ftpusername
-
-# 创建新用户，用户不允许登录（通过 ftp 可以连接）
-adduser ftpusername -s /sbin/nologin
-
-# 给用户设置密码
-passwd ftpusername
-
-# 创建用户工作组
-groupadd clent
-
-# 给已有的用户增加工作组
-usermod -G clent ftpusername
-
-# 永久性删除用户账号
-userdel ftousername
-
-# 永久性删除用户工作组
-groupdel clent
-
-
-
-# 删除用户目录
-rm -rf /var/spool mail/ftpusername
-rm -rf /home/ftpusername
-
-# 编辑用户列表文件
-vim /etc/passwd
-
-# 编辑用户组列表文件
-vim /etc/group
-
-# 添加用户
-useradd
-# 为用户设置密码
-passwd
-# 删除用户
-userdel
-# 修改用户信息
-usermod
-# 添加用户组
-groupadd
-# 删除用户组
-groupdel
-# 修改用户组
-groupmod
+```bash
 # 显示当前进程用户所属用户组
 grouos
 ```
@@ -236,4 +268,52 @@ mount /dev/sdb1 /xiaodianying
 
 ```bash
 _/10 _ \* \* \* /home/xjj/wc10min
+```
+
+### 用户和用户组的配置文件
+
+查看用户信息的一些命令：
+
+```bash
+# 查看系统中所有用户
+cut -d : -f 1 /etc/passwd
+
+# 查看可以登录系统的用户
+cat /etc/passwd | grep -v /sbin/nologin | cut -d : -f 1
+
+# 查看登录用户
+who
+
+# 查看某一用户
+w mysql
+
+# 查看用户登录历史记录
+last
+```
+
+查看用户配置文件：
+
+```bash
+# 查看用户 user1 自己的 /home 目录（查看时要打开隐藏文件可见）
+ls -a /home/user1
+
+# 创建用户的信息也会记录在 /etc/passwd 文件中
+tail -10 /etc/passwd
+
+# 创建用户也会在 /etc/shadow 保留用户信息
+tail -10 /etc/shadow
+
+# 删除用户 user1 目录
+rm -rf /var/spool mail/user1
+rm -rf /home/user1
+```
+
+修改用户配置文件：
+
+```bash
+# 编辑用户配置文件
+vim /etc/passwd
+
+# 编辑用户组配置文件
+vim /etc/group
 ```

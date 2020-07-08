@@ -23,3 +23,34 @@ order: 6
 ```bash
 yum install wget -y
 ```
+
+## man
+
+`man`（`manual` 的缩写）是 Linux 下的帮助命令，通过 `man` 指令可以查看 Linux 中的指令帮助、配置文件帮助和编程帮助等信息。
+
+```bash
+# 查看 ls 命令的帮助说明
+man ls
+
+# 查看 cd 命令的帮助说明
+man cd
+```
+
+## help
+
+```bash
+# 内部命令使用 help 帮助，查看 cd 命令的帮助
+help cd
+
+# 外部命令使用 help 帮助，查看 ls 命令的帮助
+ls --help
+```
+
+## info
+
+info 帮助比 help 更详细，作为 help 的补充
+
+```bash
+# 查看 cd 命令的详细帮助信息
+info cd
+```

@@ -92,6 +92,22 @@ iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
 
 ## 网络测试
 
+### nslookup
+
+```bash
+# 查询域名
+$ nslookup <domain>
+
+# 查询其他记录
+$ nslookup -qt = <type> <domain>
+```
+
+**type 参数**
+
+- `A` 地址记录
+- `AAAA` 地址记录
+- `CNAME` 别名记录
+
 ### ping
 
 用于探测网络通不通（不包括那些禁 ping 的网站）

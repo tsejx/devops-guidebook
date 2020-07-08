@@ -80,6 +80,8 @@ scp /temp/test.tar.gz username@hostname:/usr/test/test/tar.gz
 
 ### cat
 
+`cat` 命令用于将文本内容显示到终端。
+
 最常用，注意，如果文件很大的话，`cat` 命令的输出结果会疯狂在终端上输出，可以多按几次 `ctrl + c` 终止
 
 ```bash
@@ -115,11 +117,25 @@ find / -name ftpusername
 
 ### tail
 
+`tail` 命令用于查看文件结尾
+
+```bash
+# 查看文件 demo 的结尾
+tail demo
+
+# 查看文件 demo 最后三行
+tail -3 demo
+```
+
 大多数做服务端开发的同学，都了解这么命令。比如，查看 Nginx 的滚动日志。
 
 ```bash
+# 跟踪文件变化
+# 常用参数 -f 文件内容更新后，显示信息同步更新
 tail -f access.log
 ```
+
+用 `ctrl + c` 退出跟踪文件变化。
 
 `tail` 命令可以静态的查看某个文件的最后 n 行，与之对应的，`head` 命令查看文件头 n 行。但 head 没有滚动功能，就像尾巴是往外长的，不会反着往里长。
 
@@ -129,67 +145,208 @@ tail -n100 access.log
 head -n100 access.log
 ```
 
+### head
+
+`head` 命令用于查看文件开头。
+
 ### less
 
 既然 cat 有这个问题，针对比较大的文件，我们就可以使用 less 命令打开某个文件。
 类似 vim，less 可以在输入/后进入查找模式，然后按 n(N)向下(上)查找。
 有许多操作，都和 vim 类似，你可以类比看下。
 
+### wc
+
+`wc` 命令用于统计文件内容信息。
+
+```bash
+# 查看文件 demo 行数
+wc -l demo
+```
+
+可以先用 `wc` 命令查看文件行数，再决定用 `head` 或 `tail` 查看文件内容。
+
 ## 文件编辑
 
-### vi
+### vi / vim
+
+多模式文本编辑器
+
+四种模式：
+
+- 正常模式（Normal-mode）
+- 插入模式（Insert-mode）
+- 命令模式（Command-mode）
+- 可视模式（Visual-mode）
+
+```bash
+# 进入编辑器
+vi
+
+# 退出编辑器，<Enter> 为回车键
+:q <Enter>
+```
+
+插入模式
+
+```bash
+# 进入插入模式
+i
+
+# 进入插入模式，并且光标跳转至当前光标的下一行
+# 并且将原有下一行向下移动
+o
+
+# 与上个命令类似，只是该命令跳转为上一行
+<Shift> 0
+```
+
+光标操作
+
+```bash
+# 向左
+h
+
+# 向下
+j
+
+# 向上
+k
+
+# 向右
+l
+```
+
+复制粘贴
+
+```bash
+# 复制行（按下后界面没有任何提示）
+yy
+
+# 复制光标位置到结尾
+y$
+
+# 粘贴行
+p
+
+# 复制多行（有提示）
+# 示例：复制连续三行
+3yy
+
+# 复制局部字符
+# 光标移到复制字符开头
+# <Shift> 4
+
+# 剪切
+dd
+
+# 剪切光标位置到结尾
+d$
+
+# 撤销
+u
+
+# 撤销重做（返回上一次撤销）
+u <Ctrl> + r
+
+# 删除单个字符
+x
+
+# 显示行
+:set nu
+
+# 光标移动到指定行
+# 移动到第 10 行
+10G
+
+# 移动到当前行开头（Shift + 6）
+^
+
+# 移动到当前行结尾（Shift + 4）
+$
+```
+
+可视模式
+
+三种进入可视模式的方式：
+
+- `v`：字符可视模式
+- `V`：行可视模式
+- `ctrl + v`：块可视模式
+
+```bash
+# 进入可视模式
+v
+```
 
 ## 文件权限
 
-### chmod
-
-### chown
-
-chown 用来改变文件的所属用户和所属组
-chmod 用来改变文件的访问权限
+- chown 用来改变文件的所属用户和所属组
+- chmod 用来改变文件的访问权限
 
 这两个命令，都和 Linux 的文件权限 777 有关。
 
-示例：
+### chmod
+
+- 权限
+  - `u`：针对属主操作
+  - `g`：针对属组操作
+  - `o`：针对其他用户操作
+  - `a` 全部操作
+- 操作类型
+  - `+`：增加权限
+  - `-`：减少权限
+  - `=`：权限赋值
+- 权限类型：
+  - `r`：读
+  - `w`：写
+  - `x`：执行
+
+例如：
+
+- `u+r`：针对属主增加读取权限
+- `g-w`：针对属组减少写进权限
+- `o=x`：针对其他用户赋予执行权限
 
 ```bash
+# 对 test 文件夹，属主增加「可执行」权限
+chmod u+x /test
+
+# 对 test 文件夹，属组增加「可执行」权限
+chmod g+x /test
+
+# 对 test 文件夹，属主减少「读取」权限
+chmod u-r /test
+
+# 数字表达（最大权限）
+chmod 777 /test
+
 # 毁灭性命令
 chmod 000 -R /
 
-# 修改 a 目录的用户和组为 xjj
-chown -R xjj:xjj a
+# 修改 a 目录的用户和组为 ben
+chown -R ben:ben a
 
 # 给 a.bash 文件增加执行权限（常用）
 chmod a+x a.bash
 ```
 
-- `install` 安装或升级软件或备份数据
-- `tree` 树状图列出目录的内容
-- `popd` 用于删除目录栈中的记录
-- `pushd` 将目录加入命令堆叠中
-- `dirs` 显示目录记录
-- `rmdir` 删除空目录
-- `mkdir`(make dir) 创建目录
-- `rm`(remove) 删除文件和目录
-- `pwd` 绝对路径方式显示用户当前工作目录
-- `ls` 显示目录内容列表
-- `mv`(move) 对文件或目录重命名
-- `cp`(copy) 将源文件或目录拷贝到目标文件或目录中
-- `cd` 切换用户当前工作目录
+### chown
 
-关于可执行文件路径的变量：`$PATH`
-
-先通过 root 的身份列出搜寻的路径为何？
+`chown` 用于更改属主、属组
 
 ```bash
-[root@linux ~]# echo $PATH
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+# 修改 test 文件夹所属用户组为 group1
+chown :group1 /test
 ```
 
-如果想要让 root 在任何目录均可执行 `/root` 下面的 `ls`，那么就将 `/root` 加入 PATH 当中即可。加入的方法很简单，就像下面这样：
+### chgrp
+
+`chgrp` 命令可以单独更改属组，不常用。
 
 ```bash
-[root@linux ~]# PATH="${PATH}:/root"
+# 修改 test 文件夹所属用户组为 group1
+chgrp /test group1
 ```
 
 ### stat
@@ -248,6 +405,10 @@ tar.bz2 > tar.gz > zip > tar
 
 压缩率越高，压缩以及解压的时间也就越长
 
+- 最早的 Linux 备份介质是磁带，使用的命令是 `tar`
+- 可以打包后的磁带文件进行压缩储存，压缩的命令是 `gzip` 和 `bzip2`
+- 经常使用的扩展名 `.tar.gz`、`.tar.bz2`、`.tgz`
+
 ### tar
 
 可为 Linux 的文件和目录创建档案。利用 `tar`，可以为某一特定文件创建档案（备份文件），也可以在档案中改变文件，或者向档案中加入新的文件。
@@ -259,20 +420,38 @@ tar.bz2 > tar.gz > zip > tar
 
 - `-c`：打包
 - `-v`：显示过程
-- `-f`：指定打包后的文件名
+- `-f`：指定操作类型为文件
 - `-t`：列出备份文件的内容
-- `-x`：从备份文件中还原文件
+- `-x`：解包，从备份文件中还原文件
 - `-z`：通过 gzip 指令处理文件
 
+⚠️ **注意：**`tar` 命令参数没有 `-` 引导符
+
 ```bash
-# 打包
-tar -czvf filename.tar filename
+# 打包（将 /etc 目录打包到 /tmp/etc-backup.tar）
+tar cf /tmp/etc-backup.tar /etc
+
+tar czvf taget.tar destination
 
 # 查阅包内文件
-tar -ztvf filename.tar.gz
+tar ztvf filename.tar.gz
 
-# 解包
-tar -zxvf /opt/soft/test/filename.tar.gz
+# 解包（将 /tmp/etc-backup.tar 解压到 /root）
+tar xf /tmp/etc-backup.tar -C /root
+
+tar zxvf /opt/soft/test/filename.tar.gz
+```
+
+可以使用 `ls -l filename` 查看打包后文件的权限、创建事件、包大小等。
+
+`tar` 集成了 `gzip` 命令和 `bzip2` 命令。
+
+```bash
+# gzip
+tar czf /tmp/etc-backup.tar.gz /etc
+
+# bzip2
+tar cjf /tmp/etc-backup.tar.bz2 /etc
 ```
 
 ### gzip & gunzip

@@ -50,10 +50,6 @@ uname -e
 
 lsof（list open files）是一个列出当前系统打开文件的工具。在 Linux 环境下，任何事物都以文件的形式存在，通过文件不仅仅可以访问常规数据，还可以访问网络连接和硬件。所以如传输控制协议（TCP）和用户数据报协议（UDP）套接字等，系统在后台能为该应用程序分配了一个文件描述符，无论这个文件的本质如何，该文件描述符为应用程序与操作系统之间的交互提供了通用接口。因为应用程序打开文件的描述符列表提供了大量关于这个应用程序本身的信息，因此通过 lsof 工具能够查看这个列表对系统及排错将是很有帮助的。
 
-https://www.cnblogs.com/sparkbj/p/7161669.html
-
-https://www.cnblogs.com/fps2tao/p/10042553.html
-
 ```bash
 lsof -i:端口号
 ```
@@ -71,3 +67,10 @@ top 也能看内容，但不友好，free 是专门用来查看内存的。包�
 ```bash
 top -H -p pid
 ```
+
+---
+
+**参考资料：**
+
+- [Linux lsof 命令详解](https://www.cnblogs.com/sparkbj/p/7161669.html)
+- [Linux 如何查看端口被哪个进程占用](https://www.cnblogs.com/fps2tao/p/10042553.html)
