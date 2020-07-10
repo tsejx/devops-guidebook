@@ -25,11 +25,15 @@ order: 2
   - `dig` 域名查询工具
   - `ping` 测试主机之间网络的联通性
   - `netstat` 查看网络系统状态信息
+  - `traceroute`
+  - `tcpdump`
+  - `netstat`
 - 网络安全
   - `ssh` openssh 套件中的客户端连接工具
   - `ssh-keygen` 为 SSH 生成、管理和转换认证密钥
 - 网络配置
   - `ifconfig` 配置和显示系统网卡的网络参数
+  - `route` 查看网关命令
 
 ## 网络应用
 
@@ -70,8 +74,6 @@ wget --ftp-user=USERNAME --ftp-parssword=PASSWORD url
 开机启用  ： systemctl enable firewalld
 ```
 
-https://www.cnblogs.com/mymelody/p/10490776.html
-
 放行 TCP 80 端口
 
 ```bash
@@ -89,6 +91,8 @@ iptables -L -n
 iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
 ```
+
+- [CentOS7 firewalld 打开关闭端口](https://www.cnblogs.com/mymelody/p/10490776.html)
 
 ## 网络测试
 
@@ -262,6 +266,88 @@ service sshd stop
 
 ## 网络配置
 
-### iconfig
+### ifconfig
+
+`ifconfig` 是 Linux 的网络状态查看命令
 
 查看 IP 地址，替代品是 `ip addr` 命令。
+
+`eth0` 第一块网卡（网络接口）
+
+你的第一个网络接口可能叫做下面的名字：
+
+- `eno1`：板载网卡
+- `ens33`：PCI-E 网卡
+- `enp0s3`：无法获取物理信息的 PCI-E 网卡
+
+CentOS 7 使用了一致性网络设备命名，以上都不匹配则使用 `eth0`。
+
+网络接口命名修改
+
+网卡命名规则受 biosdevname 和 net.ifnames 两个参数影响。
+
+编辑 `/etc/default/grub` 文件，增加 `biosdevname=0 net.ifnames=0`
+
+```bash
+# 查看网络配置
+ifconfig
+
+lo0: flags=8049<UP,LOOPBACK,RUNNING,MULTICAST> mtu 16384
+	options=1203<RXCSUM,TXCSUM,TXSTATUS,SW_TIMESTAMP>
+	inet 127.0.0.1 netmask 0xff000000
+	inet6 ::1 prefixlen 128
+	inet6 fe80::1%lo0 prefixlen 64 scopeid 0x1
+	nd6 options=201<PERFORMNUD,DAD>
+```
+
+- `en5`：网卡名称
+- `inet`：网卡 IP 地址
+- `netmask`：对应子网掩码
+- `ether`：网卡 MAC 地址
+- `RX & TX`：发送/接受数据大小
+
+```bash
+# 修改网卡后重启
+reboot
+```
+
+修改网络配置
+
+```bash
+ifconfig <接口> <IP地址> [netmask 子网掩码]
+
+ifup <接口>
+
+ifdown <接口>
+```
+
+### route
+
+`route` 命令用于显示并设置 Linux 内核中的网络路由表。
+
+```bash
+# 不执行 DNS 反向查找，直接显示数字形式的 IP 地址
+route -n
+
+# 新增一条到达 244.0.0.0 的路由
+route add -net 224.0.0.0 netmask 240.0.0.0 dev eth0
+
+# 屏蔽一条路由，目的地为 244.x.x.x 将被拒绝
+route add -net 224.0.0.0 netmask 240.0.0.0 reject
+```
+
+### ip
+
+```bash
+# ifconfig
+ip addr ls
+
+# ifup eth0
+ip link set dev eth0 up
+
+# ifconfig eth1 10.0.0.1 netmask 255.255.255.0
+ip addr add 10.0.0.1/24 dev eth1
+
+# route add -net 10.0.0.0 netmask 255.255.255.0 gw 192.168.0.1
+ip route add 10.0.0/24 via 192.168.0.1
+```

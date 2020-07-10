@@ -27,6 +27,8 @@ order: 1
   - `pkill` 可以按照进程名杀死进程
   - `at` 在指定时间执行一个任务
   - `crontab` 提交和管理用户的需要周期性执行的任务
+  - `kill` 删除执行中的程序或工作
+  - `nohup` 将程序以忽略挂起信号的方式运行起来
 - 用户和工作组
   - `useradd` 新建用户
   - `userdel` 删除用户
@@ -140,8 +142,75 @@ ps <pid>
 # 找到 java 进程
 ps -ef | grep java
 
+# 在所有程序中查找 nginx
+# -a 显示所有终端机下执行的程序
+# -u 列出该用户的程序的状况
+# -v 同 -a
 ps aux | grep nginx
 
+#
+ps -elf
+
+#
+ps -e | more
+```
+
+- 进程也是树形结构
+- 进程和权限有着密不可分的关系
+
+### pstree
+
+```bash
+# 以树状结构显示线程结构
+pstree
+```
+
+### nice
+
+```bash
+# 新建进程并设置优先级，将当前目录下的 documents 目录打包，但不希望 tar 占用太多 CPU
+nice -10 tar zcf pack.tar.gz documents
+```
+
+### kill
+
+`kill` 命令用来删除执行中的程序或工作。
+
+```bash
+# 列出所有信号名称
+kill -l
+
+# 无条件结束 pid 为 22817 的进程
+kill -9 22817
+```
+
+可以先通过 `ps` 查找进程，然后用 `kill` 杀掉：
+
+```bash
+$ ps -ef | grep vim
+root      3268  2884  0 16:21 pts/1    00:00:00 vim install.log
+root      3370  2822  0 16:21 pts/0    00:00:00 grep vim
+
+$ kill 3268
+```
+
+常用的信号：
+
+- `HUP`（1）：终端断线
+- `INT`（2）：中断（同 Ctrl + C）
+- `QUIT`（3）：退出（同 Ctrl + \）
+- `TERM`(15)：终止
+- `KILL`（9）：强制终止
+- `CONT`（18）：继续（与 STOP 相反）
+- `STOP`（19）：暂停（同 Ctrl + Z）
+
+### nohup
+
+`nohup` 命令可以将程序以忽略挂起信号的方式运行起来，被运行的程序的输出信息将不会显示到终端。
+
+```bash
+# 以忽略挂起信号运行 /var/log/message
+nohup tail -f /var/log/messages &
 ```
 
 ## 用户和工作组
