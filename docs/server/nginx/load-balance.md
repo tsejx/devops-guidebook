@@ -76,3 +76,6 @@ server {
 | least_conn  | 最少链接数，那个机器连接数少就分支                                           |
 | url_hash    | 按照访问的 url 的 hash 结果来分配请求，是每个 url 定向到同一个后端服务器     |
 | hash 关键值 | hash 自定义的 key                                                            |
+
+
+https://juejin.im/post/5e806d84e51d4546b659b370
