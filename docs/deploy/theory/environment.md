@@ -1,4 +1,15 @@
-# 测试环境
+---
+nav:
+  title: 部署
+  order: 4
+group:
+  title: 部署理论
+  order: 1
+title: 环境区分
+order: 2
+---
+
+# 环境区分
 
 - 开发联调环境
 - 自动化测试环境
@@ -25,6 +36,10 @@ Staging
 实现：把预发布环境的访问域名设置成和线上环境的不一样，通过配置 host 来访问预发布环境
 
 ## 灰度发布
+
+# 灰度
+
+- [一个极简、易用的灰度分流方案(内附源码)](https://blog.csdn.net/caiguoxiong0101/article/details/104572533?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io)
 
 ## 生产环境
 

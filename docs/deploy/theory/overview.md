@@ -1,4 +1,15 @@
-# Deploy
+---
+nav:
+  title: 部署
+  order: 4
+group:
+  title: 部署理论
+  order: 1
+title: 基本概述
+order: 2
+---
+
+# 基本概述
 
 - 部署方案规划
 - 待部署项目分析
@@ -105,3 +116,18 @@
   - 防火墙配置
   - Nginx 的安装和进行端口转发
   - 本地数据库，线上数据库自动备份机制
+
+---
+
+- travis-ci
+- azure-pipelines
+
+- [花椒前端基于 GitLab CI/CD 的自动化构建、发布实践](https://zhuanlan.zhihu.com/p/69513606)
+- [使用 Gitlab CI 实现前端资源自动发布](https://zhuanlan.zhihu.com/p/37325902)
+- [Gitlab CI 在前端 CI/CD 中的运用](https://zhuanlan.zhihu.com/p/136876843)
+- [Gitlab CI&CD 实战经验分享](https://zhuanlan.zhihu.com/p/51163261)
+- [前端 Docker + Gitlab CI 的持续集成](https://zhuanlan.zhihu.com/p/44748907)
+- [部署基于 Gitlab + Docker + Rancher + Harbor 的前端项目这一篇就够了](https://zhuanlan.zhihu.com/p/94844844)
+
+* [从零开始搭建一个前端资源自动化构建发布系统](https://zhuanlan.zhihu.com/p/38139513)
+* [这些年的体验技术部：Node.js 基础服务 摸爬滚打才不负功名尘土](https://zhuanlan.zhihu.com/p/84176287)
