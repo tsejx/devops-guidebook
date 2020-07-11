@@ -5,22 +5,11 @@ nav:
 group:
   title: 常用命令
   order: 1
-title: Shell 内建命令
+title: 环境变量
 order: 100
 ---
 
-# Shell 内建命令
-
-## kill
-
-Shell 内建
-
-杀掉进程
-
-```bash
-# 强迫进程立即停止
-kill -9 <pid>
-```
+# 环境变量
 
 ## export
 
@@ -31,4 +20,3 @@ export PATH=$PATH:/home/xjj/jdk/bin
 ```
 
 有时候，你想要知道所执行命令的具体路径。那么就可以使用 whereis 命令，我是假定了你装了多个版本的 jdk。
-

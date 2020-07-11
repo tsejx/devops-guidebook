@@ -15,20 +15,20 @@ order: 1
   - `sudo` 以其他身份来执行命令
 - 进程和作业
   - `systemctl` 系统服务管理器指令
+  - `service` 控制系统服务的实用工具
   - `w` 显示目前登入系统的用户信息
   - `watch` 周期性执行给定的指令
   - `pidof` 查找指定名称的进程的进程 ID 号
-  - `skill` 向选定的进程发送信号冻结进程
-  - `service` 控制系统服务的实用工具
-  - `telint` 切换当前正在运行系统的运行等级
-  - `killall` 使用进程的名称来杀死一组进程
   - `ps` 报告当前系统的进程状态
+  - `telint` 切换当前正在运行系统的运行等级
   - `init` 所有 Linux 进程的父进程
-  - `pkill` 可以按照进程名杀死进程
   - `at` 在指定时间执行一个任务
   - `crontab` 提交和管理用户的需要周期性执行的任务
-  - `kill` 删除执行中的程序或工作
   - `nohup` 将程序以忽略挂起信号的方式运行起来
+  - `kill` 删除执行中的程序或工作
+  - `pkill` 可以按照进程名杀死进程
+  - `skill` 向选定的进程发送信号冻结进程
+  - `killall` 使用进程的名称来杀死一组进程
 - 用户和工作组
   - `useradd` 新建用户
   - `userdel` 删除用户
@@ -65,7 +65,7 @@ order: 1
 
 ### systemctl
 
-Systemd 可以管理所有系统资源。不同的资源统称为 Unit（单位）。
+`systemctl` 命令是系统服务管理器指令。它实际上将 `service` 和 `chkconfig` 这两个命令组合到一起。
 
 Unit 一共分成 12 种。
 
@@ -101,22 +101,22 @@ systemctl 兼容了 service 命令，我们看一下怎么重启 mysql 服务。
 `systemctl` 是 CentOS7 的服务管理工具中主要的工具，它融合之前 service 和 chkconfig 的功能于一体。
 
 ```bash
-# 启动一个服务
+# 启动服务
 $ systemctl start nginx.service
 
-# 关闭一个服务
+# 关闭服务
 $ systecmtl stop nginx.service
 
-# 重启一个服务
+# 重启服务
 $ systemctl restart nginx.service
 
-# 显示一个服务状态
+# 查看服务当前状态
 $ systemctl status postfix.service
 
 # 开机时自动启动服务
 $ systemctl enable nginx.service
 
-# 禁用开机时自启动服务
+# 开机时自动禁用服务
 $ systemctl disable nginx.service
 
 # 查看服务是否开机启动
@@ -129,7 +129,7 @@ $ systemctl list-unit-files | grep enabled
 $ systemctl --failed
 ```
 
-对于普通的进程，就要使用 kill 命令进行更佳详细的控制了。kill 命令有很多信号，如果你在用 `kill -9`，你一定想要了解 `kill -15` 以及 `kill -3` 的区别和用途。
+对于普通的进程，就要使用 `kill` 命令进行更佳详细的控制了。`kill` 命令有很多信号，如果你在用 `kill -9`，你一定想要了解 `kill -15` 以及 `kill -3` 的区别和用途。
 
 ### ps
 

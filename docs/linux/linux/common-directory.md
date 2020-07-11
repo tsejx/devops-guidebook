@@ -6,7 +6,7 @@ group:
   title: Linux 系统
   order: 1
 title: 常见目录
-order: 8
+order: 2
 ---
 
 # 常见目录
@@ -15,28 +15,28 @@ Linux 将整个文件系统看作一棵树，这棵树的树根叫做根文件�
 
 ## 常用的系统文件目录
 
-| 目录  | 语义                | 描述                                   |
-| ----- | ------------------- | -------------------------------------- |
-| /bin  | User Binaries       | 供所有用户使用的完成基本维护任务的命令 |
-| /etc  | Configuration Files | 系统和应用软件的配置文件               |
-| /home | Home Directories    | 普通用户的主目录                       |
-| /lib  | System Libraries    | 系统最基本的共享链接库和内核模块       |
-| /root | Root Directories    | 系统管理员的主目录                     |
-| /sbin | System Binaries     | 存放系统管理员使用的管理程序           |
-| /tmp  | Temporary Files     | 临时文件的存放目录                     |
-| /proc | Process Information | 虚拟文件系统                           |
-| /var  | Variable Files      | 存放在系统运行时可能会更改的数据       |
-| /usr  | User Programs       |                                        |
+| 目录           | 语义                   | 描述                                              |
+| -------------- | ---------------------- | ------------------------------------------------- |
+| /root          | Root Directories       | 系统管理员的主目录                                |
+| /home/username | Home Directories       | 普通用户的主目录                                  |
+| /bin           | User Binaries          | 供所有用户使用的完成 `基本维护任务的命令`         |
+| /sbin          | System Binaries        | 存放系统管理员使用的 `管理程序命令`               |
+| /lib           | System Libraries       | 系统最基本的 `共享链接库和内核模块`               |
+| /etc           | Configuration Files    | 系统和应用软件的 `配置文件`                       |
+| /tmp           | Temporary Files        | 临时文件的存放目录                                |
+| /proc          | Process Information    | 虚拟文件系统                                      |
+| /var           | Variable Files         | 存放在系统 `运行时可能会更改的数据`               |
+| /usr           | Unix Software Resource | Unix 操作系统软件资源所放置的目录，而非用户的数据 |
 
-`/usr` 目录的目录结构与根目录相似，但根目录中的文件多是系统级的文件，而 `/usr` 目录中是用户级的文件，一般与具体的系统无关。
+`/usr` 不是 `user` 的缩写，其实 `usr` 是 Unix Software Resource，也就是 Unix 操作系统软件资源所放置的目录，而非用户的数据；所有系统默认的软件都会放置到 `/usr`，系统安装完时，这个目录会占用最多的硬盘容量。
 
 | 目录            | 语义 | 描述                                                           |
 | --------------- | ---- | -------------------------------------------------------------- |
-| /usr/bin        |      | 多数日常应用程序存放的位置                                     |
+| /usr/bin        |      | 用户需要执行的命令，例如压缩、文件查找、客户端等程序           |
+| /usr/sbin       |      | 系统运行不必须的命令，例如服务端程序、用户管理等程序           |
 | /usr/include    |      | C / C++ 头文件                                                 |
 | /usr/lib        |      | 普通用户使用的库文件                                           |
 | /usr/local      |      | 个人安装的软件，通常需要手动指定；与 `/usr` 目录的目录结构相似 |
-| /usr/sbin       |      | 超级用户不需要的系统管理程序                                   |
 | /usr/libexec    |      |                                                                |
 | /usr/share      |      |                                                                |
 | /usr/standalone |      |                                                                |
