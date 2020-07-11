@@ -204,3 +204,8 @@ $ docker tag <name> username/<new-name>:v1
 # 提交镜像到自己的仓库
 $ docker push username/<new-name>:v1
 ```
+
+
+
+镜像加速
+https://www.jianshu.com/p/5a911f20d93e

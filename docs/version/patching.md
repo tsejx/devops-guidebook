@@ -60,7 +60,7 @@ $ git rebase master
 $ git rebase -i [startpoint] [endpoint]
 ```
 
- 📍 **示例：**
+📍 **示例：**
 
 ```bash
 $ git checkout feature
@@ -75,12 +75,12 @@ pick 9480b3d Message for commit #2
 pick 5c67e61 Message for commit #3
 ```
 
-* pick：正常选择
-* reword：选中，并且修改提交信息
-* edit：选中，rebase 时会暂停，允许你修改这个 commit
-* squash：选中，会将当前 commit 与上一个 commit 合并
-* fixup：与 squash 相同，但不会保存当前 commit 的提交信息
-* exec：执行其他 shell 命令
+- pick：正常选择
+- reword：选中，并且修改提交信息
+- edit：选中，rebase 时会暂停，允许你修改这个 commit
+- squash：选中，会将当前 commit 与上一个 commit 合并
+- fixup：与 squash 相同，但不会保存当前 commit 的提交信息
+- exec：执行其他 shell 命令
 
 忽略不重要的提交会让你的 feature 分支的历史更清晰易读，这是 `git merge` 做不到的。
 
@@ -117,12 +117,10 @@ $ git revert HEAD^
 $ git revert <commit-id>
 ```
 
-
-
-
-
 ---
 
 **参考资料：**
 
-* [📝 Git 由浅入深之细说变基](https://juejin.im/post/58f97793a22b9d00658b15b6)
+- [📝 Git 由浅入深之细说变基](https://juejin.im/post/58f97793a22b9d00658b15b6)
+
+* [📝 关于 Git Rebase 你必须要知道的几件事](https://juejin.im/post/5ed47d006fb9a047da363b62)

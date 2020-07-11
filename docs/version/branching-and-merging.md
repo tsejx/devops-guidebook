@@ -420,7 +420,7 @@ git tag -d <tag-name>
 
 
 # 删除远程标签
-git push origin :refs/tags/<tag-name>
+git push origin <tag-name>
 ```
 
 ### 推送标签
