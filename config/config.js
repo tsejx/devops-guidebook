@@ -1,11 +1,13 @@
-export default {
+const config = {
   mode: 'site',
   title: 'DevOps Guidebook',
   description: 'DevOps 完全知识体系',
-  publicPath: '/devops-guidebook/',
   base: '/devops-guidebook/',
-  logo: '/favicon.png',
+  publicPath: '/devops-guidebook/',
   favicon: './favicon.ico',
+  logo: '/favicon.png',
+  exportStatic: {},
+  dynamicImport: {},
   navs: [
     null,
     {
@@ -14,3 +16,9 @@ export default {
     },
   ],
 };
+
+if (process.env.NODE_ENV !== 'development') {
+  config.ssr = {};
+}
+
+export default config

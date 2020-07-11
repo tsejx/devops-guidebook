@@ -1,15 +1,15 @@
 {
   "name": "devops-guidebook",
   "version": "1.0.0",
-  "description": "",
+  "description": "A technical mannual about DevOps knowledge",
   "main": "index.js",
   "scripts": {
-    "dev": "yarn run dumi dev",
-    "build": "yarn run dumi build",
-    "deploy": "bash ./scripts/deploy.sh",
+    "start": "yarn run dev",
+    "dev": "yarn run dumi dev --port=8040",
     "lint:md": "lint-md *.md",
     "lint:fix": "lint-md *.md --fix",
-    "commit": "git-cz"
+    "build": "yarn run dumi build",
+    "deploy": "bash ./scripts/deploy.sh"
   },
   "repository": {
     "type": "git",
@@ -21,12 +21,9 @@
   ],
   "author": "tsejx",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/tsejx/devops-guidebook/issues"
-  },
-  "homepage": "https://github.com/tsejx/devops-guidebook#readme",
+  "homepage": "https://tsejx.github.io/devops-guidebook/",
   "devDependencies": {
-    "dumi": "^1.0.8",
+    "dumi": "^1.0.33",
     "lint-md": "^0.1.1"
   }
 }
