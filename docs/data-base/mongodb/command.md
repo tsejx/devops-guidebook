@@ -1,3 +1,14 @@
+---
+nav:
+  title: 数据库
+  order: 3
+group:
+  title: MongoDB
+  order: 2
+title: 命令大全
+order: 99
+---
+
 # 命令大全
 
 以下罗列使用 Mongo Shell 命令行对数据库的操作常用方法。
@@ -1125,3 +1136,88 @@ $ db.shutdownserver();
 - db.revokeRolesFromUser()
 - db.updateUser()
 - passwordPrompt()
+
+
+
+
+## 导入导出
+
+```bash
+# 导入
+mongoimport
+
+mongoimport --host localhost --port 27017 --username ezsonaruser --password 123456 --collection host_locations_test --db ezsonar_25 --file /root/shaql/host_locations.json
+```
+
+-- host 后的 localhost：要导入的数据库 ip
+--port 后的 27017：要导入的实例节点端口号
+--username 后的 ezsonaruser：数据库用户名
+--password 后的 123456：数据库用户密码
+--collection 后的 host_locations_test：要导入的表名
+--db 后的 ezsonar_25：要导入的表所在数据库名
+--file 后的 /root/shaql/host_locations.json：要导入的源文件路径(默认为当前文件夹)
+
+
+
+```
+# 导出
+mongoexport
+
+mongoexport --host localhost --port 27017 --username ezsonaruser --password 123456 --collection host_locations --db ezsonar_25 --out /root/host_locations.json
+```
+
+--host 后的 localhost：要导出数据库 ip
+--port 后的 27017：要导出的实例节点端口号
+--username 后的 ezsonaruser：数据库用户名
+--password 后的 123456：数据库用户密码
+--collection 后的 widgets-test：要导出的表名
+--db 后的 ezsonar_25：要导出的表所在数据库名
+--out 后的 /root/host_locations.json：要导出的文件路径(默认为当前文件夹)
+
+## 备份与恢复
+
+```bash
+# 备份
+mongodump -h dbhost -d dbname -o dbdirectory
+
+# 恢复
+
+```
+
+MongoDB 想速成吗，这个系列教程你可以看看
+https://juejin.im/post/5ca0110ee51d45452a07916b
+https://juejin.im/post/5cad9cefe51d456e336cd461
+
+批量导入/导出脚本
+
+```bash
+#!/bin/bash
+collections=( "student"  "teacher" "leader")
+
+for item in ${collections[@]}; do
+  mongoexport --port 27017 --host localhost -u root -p 123456-c $item -d this_db --type=json --out $item.json --authenticationDatabase admin
+done
+```
+
+
+
+| 工具         | 描述                                                         |
+| ------------ | ------------------------------------------------------------ |
+| mongosniff   | MongoDB 监测工具，作用类似于 tcpdump                         |
+| mongodump    | MongoDB 数据备份工具                                         |
+| mongoimport  | MongoDB 数据导入工具                                         |
+| mongoexport  | MongoDB 数据导出工具                                         |
+| bsondump     | 将 bson 格式的文件转储为 JSON 格式的数据                     |
+| mongoperf    |                                                              |
+| mongorestore | MongoDB 数据恢复工具                                         |
+| mongod.exe   | MongoDB 服务启动工具                                         |
+| mongostat    | Mongodb 自带的状态检测工具                                   |
+| mongofiles   | GridFS 管理工具，可实现二制文件的存取                        |
+| mongooplog   |                                                              |
+| mongotop     | 跟踪一个 MongoDB 的实例，查看哪些大量的时间花费在读取和写入数据 |
+| mongos       | 分片路由，如果使用了 sharding 功能，则应用程序连接的是 mongos 而不是 mongod |
+| mongo        | 客户端命令行工具，其实也是一个 JavaScript 解释器，支持 JavaScript 语法 |
+
+
+MongoDB 导出 mongoexport 和导入 mongoimport 介绍
+https://www.cnblogs.com/mengyu/p/7718311.html

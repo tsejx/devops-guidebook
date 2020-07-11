@@ -5,11 +5,11 @@ nav:
 group:
   title: MongoDB
   order: 2
-title: 副本集
-order: 8
+title: 数据库副本集
+order: 9
 ---
 
-# 副本集
+# 数据库副本集
 
 MongoDB 副本集由一组 mongod 实例（进程）组成，包含一个 Primary 节点和多个 Secondary 节点， Mongodb Driver（客户端）的所有数据都写入Primary，Secondary 从 Primary 同步写入的数据，以保持副本集内所有成员存储相同的数据集，提供数据的高可用。
 
@@ -24,7 +24,7 @@ MongoDB 副本集由一组 mongod 实例（进程）组成，包含一个 Primar
 
 各个节点成员通过**心跳机制**进行通信，为主节点与节点的通信的时间超过配置的 electionTimeoutMillis 期间（默认 10 秒）时，符合条件的从节点要求选举将自己指定为新主节点，群集尝试完成新主节点的**选举**并恢复正常操作。
 
-![MongoDB Replication Relationship](../../snapshots/mongodb/mongodb-replication-relationship..png)
+![MongoDB Replication Relationship](../../assets/mongodb/mongodb-replication-relationship..png)
 
 **主节点：**副本集只能有一个主节点能够确认写入操作来接收所有写操作，并记录其操作日志中的数据集的所有更改（记录在 oplog 中）。
 
@@ -42,7 +42,7 @@ MongoDB 副本集由一组 mongod 实例（进程）组成，包含一个 Primar
 
 **仲裁节点：** 仲裁节点不维护数据集。 仲裁节点的目的是通过响应其他副本集节点的心跳和选举请求来维护副本集中的仲裁。 因为它们不存储数据集，所以仲裁节点可以是提供副本集仲裁功能的好方法，其资源成本比具有数据集的全功能副本集成员更便宜。 如果您的副本集具有偶数个成员，请添加仲裁节点以获得主要选举中的大多数投票。而且仲裁节点总是只有1次选举投票，因此允许副本集具有不均匀的投票成员数，而没有复制数据的额外成员的开销。
 
-![](../../snapshots/mongodb/mongodb-replication-heartbeat.png)
+![](../../assets/mongodb/mongodb-replication-heartbeat.png)
 
 **心跳机制（Hearbeat）：** 副本集成员间默认**每两秒**会发送一次心跳信息，如果**十秒**未收到某个节点的心跳，则认为该节点已宕机不可以访问；如果宕机的节点为 Primary，Secondary（前提是可被选为 Primary）会发起新的 Primary 选举。仲裁员与其他集合成员之间的唯一沟通是：选举期间的投票，心跳和配置数据，而且这些交换未加密。
 
@@ -63,11 +63,11 @@ MongoDB 副本集由一组 mongod 实例（进程）组成，包含一个 Primar
 - 一个主节点
 - 两个从节点，主节点宕机后，有机会选举成为主节点
 
-![](../../snapshots/mongodb/mongodb-replication-heartbeat.png)
+![](../../assets/mongodb/mongodb-replication-heartbeat.png)
 
 当主库宕机后，两个从库都会进行竞选，其中一个变为主库，当原主库恢复后，作为从库加入当前的副本集群即可。
 
-![](../../snapshots/mongodb/mongodb-election-for-new-primary.png)
+![](../../assets/mongodb/mongodb-election-for-new-primary.png)
 
 两个数据节点以及一个仲裁节点：
 
@@ -75,11 +75,11 @@ MongoDB 副本集由一组 mongod 实例（进程）组成，包含一个 Primar
 - 一个从节点，有机会被选举成为主节点
 - 一个仲裁节点，只有投票权利
 
-![](../../snapshots/mongodb/mongodb-arbiter.png)
+![](../../assets/mongodb/mongodb-arbiter.png)
 
 当主节点不可用时，将会选择从节点成为主Primary，主节点恢复后，将其作为从节点加入到现有的副本集群中即可。
 
-![](../../snapshots/mongodb/mongodb-new-primary.jpg)
+![](../../assets/mongodb/mongodb-new-primary.jpg)
 
 ## 节点类型
 
@@ -89,7 +89,7 @@ MongoDB 副本集由一组 mongod 实例（进程）组成，包含一个 Primar
 
 例如，一个数据中心承载主数据中心和辅助数据中心：
 
-![](../../snapshots/mongodb/mongodb-priority-zero-node.png)
+![](../../assets/mongodb/mongodb-priority-zero-node.png)
 
 第二个数据中心节点优先级为 0 只能是从节点数据库，而数据中心（1）中的节点才能成为主节点数据库。（比如你跨机房 A 和 B 部署了一个副本集，并且想指定 Primary 必须在 A 机房，这时可以将 B 机房的副本集成员 Priority 设置为 0，这样 Primary 就一定会是 A 机房的成员）
 
@@ -150,7 +150,7 @@ MongoDB 副本集由一组 mongod 实例（进程）组成，包含一个 Primar
 
 下面通过示例图描述副本集选举的过程：
 
-![](../../snapshots/mongodb/mongodb-selection.jpg)
+![](../../assets/mongodb/mongodb-selection.jpg)
 
 在讲解副本集选举过程前，需要提及的是：副本集当中每个节点都会有所谓的选举计数器，英文称为 `term`。计数器在每次在节点参与新的选举时候，都会将自身的选举计数器自增一，默认为 `N`，表示所有节点到目前为止都参与了 `N` 次选举。
 

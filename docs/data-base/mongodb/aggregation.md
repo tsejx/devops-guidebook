@@ -11,7 +11,7 @@ order: 6
 
 # 聚合管道
 
-先介绍管道的概念，在 POSIX 多线程的使用方式中，定义了一种重要的 pipeline 方式，成为**流水线**或**管道**，这种方式使得数据被一组线程顺序执行。
+先介绍管道的概念，在 POSIX 多线程的使用方式中，定义了一种重要的 pipeline 方式，成为 **流水线** 或 **管道**，这种方式使得数据被一组线程顺序执行。
 
 ```
 Input -> ThreadA -> ThreadB -> ThreadC -> Output
@@ -19,18 +19,27 @@ Input -> ThreadA -> ThreadB -> ThreadC -> Output
 
 以面向对象的思想去理解，整个流水线，可以理解为一个数据传输的管道；该管道中的每一个工作线程，可以理解为一个整个流水线的一个工作阶段 stage，这些工作线程之间的合作是一环扣一环的。靠输入口越近的工作线程，是时序较早的工作阶段 stage，它的工作成果会影响下一个工作线程阶段（stage）的工作结果，即下个阶段依赖于上一个阶段的输出，上一个阶段的输出成为本阶段的输入。这也是 pipeline 的一个共有特点。
 
-## MongoDB 中的管道
+## 聚合框架
 
-Mongodb 在  2.2 版本中引入了聚合框架（aggregate framework）的新功能，它是聚合的新框架，其概念类似于数据处理的管道，每个文档经过一个由多个节点组成的管道，每个节点相当于流水线中的一个 stage，有自己的功能（分组、过滤等），文档经过管道处理后，最后输出相应的结果，管道的基本功能有两个：
+Mongodb 在  2.2 版本中引入了 **聚合框架**（aggregate framework）的新功能，它是聚合的新框架，其概念类似于数据处理的管道，每个文档经过一个由多个节点组成的管道，每个节点相当于流水线中的一个 stage，有自己的功能（分组、过滤等），文档经过管道处理后，最后输出相应的结果，管道的基本功能有两个：
 
 1. 对文档进行**过滤**，筛选出合适的文档
 2. 对文档进行**变换**，改变文档的输出形式
 
-其他的一些功能还包括按照某个指定的字段分组和排序等。而且在每个阶段还可以使用表达式操作符计算平均值和拼接字符串等相关操作。管道提供了一个 MapReduce 的替代方案，MapReduce 使用相对来说比较复杂，而管道的拥有固定的接口(操作符表达),使用比较简单，对于大多数的聚合任务管道一般来说是首选方法。
+其他的一些功能还包括按照某个指定的字段分组和排序等。而且在每个阶段还可以使用表达式操作符计算平均值和拼接字符串等相关操作。
 
-MongoDB 中的聚合（aggregate）主要用于简单的数据处理（平均值，求和等），并返回计算后的数据结果，类似于 SQL 中的内嵌函数（`count()` 等） 在 MongoDB 官网给出了聚合框架的应用实例：
+管道提供了一个 MapReduce 的替代方案，MapReduce 使用相对来说比较复杂，而管道的拥有固定的接口（操作符表达），使用比较简单，对于大多数的聚合任务管道一般来说是首选方法。
 
-![](../../snapshots/mongodb/mongodb-aggregation.jpg)
+MongoDB 中的聚合主要用于简单的数据处理（平均值，求和等），并返回计算后的数据结果，类似于 SQL 中的内嵌函数（`count()` 等）。
+
+🌰 MongoDB 官网给出了聚合框架的应用实例：
+
+```jsx | inline
+import React from 'react';
+import img from '../../assets/mongodb/mongodb-aggregation.jpg';
+
+export default () => <img src={img} width={720} />;
+```
 
 ## 聚合表达式
 
@@ -53,13 +62,13 @@ MongoDB 中的聚合（aggregate）主要用于简单的数据处理（平均值
 | 常量表达式          | 说明                                                         |
 | ------------------- | ------------------------------------------------------------ |
 | `$literal: <value>` | 指示常量 `<value>`                                           |
-| `$literal: "$name"` | 指示常量字符串 "$name"<br/>这里的 `\$` 被当作常量处理，而不是字段路径表达式 |
+| `$literal: "$name"` | 指示常量字符串 "$name"<br/>这里的 `$` 被当作常量处理，而不是字段路径表达式 |
 
 ### 表达式操作符
 
 | 常用表达式 | 说明                                                         |
 | ---------- | ------------------------------------------------------------ |
-| `$sum`     | 计算总和，`{$sum: 1}` 表示返回总和 x 1 的值，使用 `{ $sum: '\$指定字段' }` 也能直接获取指定字段的值的总和 |
+| `$sum`     | 计算总和，`{$sum: 1}` 表示返回总和 x 1 的值，使用 `{ $sum: '$指定字段' }` 也能直接获取指定字段的值的总和 |
 | `$avg`     | 求平均值                                                     |
 | `$min`     | 求最小值                                                     |
 | `$max`     | 求最大值                                                     |
@@ -67,70 +76,68 @@ MongoDB 中的聚合（aggregate）主要用于简单的数据处理（平均值
 | `$first`   | 根据文档的排序获取第一个文档数据                             |
 | `$last`    | 同理，获取最后一个文档数据                                   |
 
-
-
 ### 聚合管道阶段
 
 | 聚合管道表达式 | 说明                     | MySQL 操作/函数 |
 | -------------- | ------------------------ | --------------- |
-| `$project`     | 对输入文档进行再次投影   | where           |
-| `$match`       | 对输入文档进行筛选       | having          |
-| `$limit`       | 筛选出管道内前 N 篇文档  | limit           |
-| `$skip`        | 跳过管道内前 N 篇文档    |                 |
-| `$unwind`      | 展开输入文档中的数组字段 |                 |
-| `$sort`        | 对输入文档进行排序       | order by        |
-| `$lookup`      | 对输入文档进行查询操作   | join            |
-| `$group`       | 对输入文档进行分组       | group by        |
-| `$out`         | 将管道中的文档输出       |                 |
+| [`$project`](#project)     | 对输入文档进行再次投影   | where           |
+| [`$match`](#match)       | 对输入文档进行筛选       | having          |
+| [`$limit`](#limit-和-skip)       | 筛选出管道内前 N 篇文档  | limit           |
+| [`$skip`](#limit-和-skip)        | 跳过管道内前 N 篇文档    |                 |
+| [`$unwind`](#skip)      | 展开输入文档中的数组字段 |                 |
+| [`$sort`](#sort)        | 对输入文档进行排序       | order by        |
+| [`$lookup`](#lookup)      | 对输入文档进行查询操作   | join            |
+| [`$group`](#group)       | 对输入文档进行分组       | group by        |
+| [`$out`](#out)         | 将管道中的文档输出       |                 |
 
 #### $project
 
 `$project` 管道操作符用于修改流中的文档。
 
-对文档进行重新投影，主要用于重命名、增加字字段、删除字段。
+对文档进行重新投影，主要用于**重命名**、**增加字字段**、**删除字段**。
 
 ```bash
-# 隐藏文档主键，显示 <field1> 字段值
-# 添加新字段 <new-field>，值为文档中字段 <field2> 中的 <sub-field> 的值
-$ db.<collection>.aggregate([
+# 隐藏文档 class 主键，显示 age 字段值
+# 添加新字段 name，值为原文档中字段 info 中的 name 的值
+$ db.class.aggregate([
   {
     $project: {
       _id: 0,
-      <field1>: 1,
-      <new-field>: "$<field2>.<sub-field>",
+      age: 1,
+      name: "$info.name",
     }
   }
 ])
 
-# 同样地，隐藏文档主键，显示 <field1> 字段值
-# 添加新字段 <new-field>，其数据类型为数组，也以对应 <field2> 的对象键值填充
+# 同样地，隐藏文档 class 主键，显示 age 字段值
+# 添加新字段 sub，其数据类型为数组，也以对应 subject 的对象键值填充
 # 当不存在字段，会使用 null 填充
-$ db.<collection>.aggregate([
+$ db.class.aggregate([
   {
     $project: {
       _id: 0,
-      <field1>: 1,
-      <new-field>: [
-        "$<field2>.<sub-field2>",
-        "$<field2>.<sub-field3>",
-        "$<field2>.<sub-field4>"
+      age: 1,
+      sub: [
+        "$subject.chinese",
+        "$subject.maths",
+        "$subject.english"
       ]
     }
   }
 ])
 ```
 
-`$project` 是很擦还能管用的聚合阶段，可以用来灵活地控制输出文档的格式，也可以用来提出不相关的字段，以优化聚合管道操作的性能。
+`$project` 是很常用的聚合阶段，可以用来灵活地控制输出文档的格式，也可以用来提出不相关的字段，以优化聚合管道操作的性能。
 
 #### $match
 
-`$match` 中使用的文档筛选语法，和读取文档时的 `$match` 语法相同。主要用于过滤、筛选符合条件的文档，作为下一阶段的输入。
+`$match` 中使用的**文档筛选语法**，和读取文档时的 `$match` 语法相同。主要用于过滤、筛选符合条件的文档，作为下一阶段的输入。
 
-由于 `aggregate` 管道对于内存的限制，在处理大文件的时候，最好先用 `$match` 操作符进行筛选，减少内存占用。
+⚠️ **注意**：由于 `aggregate` 管道对于内存的限制，在处理大文件的时候，最好先用 `$match` 操作符进行筛选，减少内存占用。
 
 ```bash
-# 匹配文档字段（嵌套文档） <field> 的字段 <sub-field> 的值为 <value> 的文档
-$ db.<collection>.aggregate([
+# 匹配 class 文档字段（嵌套文档） <field> 的字段 <sub-field> 的值为 <value> 的文档
+$ db.class.aggregate([
   {
     $match: {
       "<field>.<sub-field>": <value>
@@ -138,17 +145,19 @@ $ db.<collection>.aggregate([
   }
 ])
 
-$ db.<collection>.aggregate([
+$ db.class.aggregate([
   {
     $match: {
-      $or: [{
+      $or: [
+        {
           <field1>: {
             <comparasion-operator1>: <value1>,
             <comparasion-operator2>: <value2>
            }
         }, {
           "<field2>.<sub-field2>": <value3>
-      }]
+        }
+      ]
       "<field>.<sub-field>": <value>
     }
   }
@@ -163,7 +172,7 @@ $ db.<collection>.aggregate([
 - `$match` 应该尽可能在管道查询的前置阶段，可以提早过滤文档，减少后续阶段操作文档，加快聚合速度
 - 如果 `$match` 出现在最前面的话，可以使用索引来加快查询
 
-#### $limit 和 \$skip
+#### limit 和 skip
 
 `$limt` 和 `$skip` 通常在一起使用。
 
@@ -513,3 +522,18 @@ $ db.books.aggregate([
 **参考资料：**
 
 - [MongoDB 聚合管道](https://juejin.im/post/5ba8acb9e51d45395d4ee4d1)
+
+
+
+
+
+- [MongoDB 北大绿卡之安全建议](https://www.cnblogs.com/clschen/p/5523897.html)
+
+
+- [聚合运算](https://t-baby.gitbooks.io/mongodb-plugin/content/ju_he_yun_suan.html)
+
+- [MongoDB 常用语句](https://laixiazheteng.com/article/page/id/Bj7qgmJ3CJUE)
+
+- [学习 MongoDB 聚合 Aggregation Pipeline 基础篇](https://blog.csdn.net/congcong68/article/details/51620040)
+
+https://segmentfault.com/a/1190000020685264?utm_source=tag-newest

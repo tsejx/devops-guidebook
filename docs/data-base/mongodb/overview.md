@@ -11,9 +11,9 @@ order: 1
 
 # 基本概述
 
-Mongo 来源于 Humongous 意为「庞大」
+**Mongo** 来源于 Humongous 意为「庞大」。
 
-面向文档存储的开源数据库
+面向文档存储的开源数据库：
 
 - 性能好（内存计算）
 - 大规模数据存储（可拓展性）
@@ -27,15 +27,20 @@ MongoDB 是一个基于分布式文件存储的开源文档数据库。由 C++ �
 | 关系型数据库术语 | MongoDB 术语 | 说明                                      |
 | ---------------- | ------------ | ----------------------------------------- |
 | database         | database     | 数据库                                    |
-| table            | collection   | 数据库表/集合                             |
-| row              | document     | 记录行/文档                               |
-| column           | fIeld        | 数据字段/域                               |
+| table            | collection   | 数据库表 / 集合                             |
+| row              | document     | 记录行 / 文档                               |
+| column           | fIeld        | 数据字段 / 域                               |
 | index            | index        | 索引                                      |
 | primary key      | primary key  | 主键，MongoDB 自动将 `_id` 字段设置为主键 |
 
 ## 使用场景
 
-![MongoDB优点](../../snapshots/mongodb-advantage.png)
+```jsx | inline
+import React from 'react';
+import img from '../../assets/mongodb/mongodb-advantage.png';
+
+export default () => <img alt="MongoDB优点" src={img} width="480" />;
+```
 
 - **数据缓存**：由于性能很高，MongoDB 适合作为信息基础设施的缓存层。在系统重启之后，由 MongoDB 搭建的持久化缓存层可以避免下层的数据源过载。
 - **对象和 JSON 存储**：MongoDB 的 BSON(二进制 JSON)数据格式非常适合文档化格式的存储及查询,而且 JSON 格式存储最接近真实对象模型，对开发者友好，方便快速开发迭代,灵活的模式让你不在为了不断变化的需求而去频繁修改数据库字段和结构。
@@ -46,7 +51,7 @@ MongoDB 是一个基于分布式文件存储的开源文档数据库。由 C++ �
 
 一个 MongoDB 中可以建立多个数据库。
 
-MongoDB 的默认数据库为 `"db"`，该数据库存储在 data 目录中。
+MongoDB 的默认数据库为 `"db"`，该数据库存储在 `data` 目录中。
 
 MongoDB 的单个实例可以容纳多个独立的数据库，每一个都有自己的集合和权限，不同的数据库也放置在不同的文件中。
 
@@ -82,7 +87,7 @@ MongoDB 的单个实例可以容纳多个独立的数据库，每一个都有自
 | 行     | 文档                               |
 | 列     | 字段                               |
 | 表联合 | 潜入文档                           |
-| 主键   | 主键（MongoDB 提供了 key 为 \_id） |
+| 主键   | 主键（MongoDB 提供了 `key` 为 `_id`） |
 
 需要注意的是：
 
@@ -94,7 +99,7 @@ MongoDB 的单个实例可以容纳多个独立的数据库，每一个都有自
 
 文档键命名规范：
 
-- 键不能含有 `\0` (空字符)。这个字符用来表示键的结尾。
+- 键不能含有 `0` (空字符)。这个字符用来表示键的结尾。
 - `.` 和 `$` 有特别的意义，只有在特定环境下才能使用。
 - 以下划线 `_` 开头的键是保留的（不是严格要求的）。
 
@@ -188,4 +193,8 @@ ObjectId 由 12 个字节的 BSON 组成：
 ```
 
 上面语句将返回一个唯一 `_id`
+
+
+
+
 

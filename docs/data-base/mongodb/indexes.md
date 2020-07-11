@@ -5,11 +5,11 @@ nav:
 group:
   title: MongoDB
   order: 2
-title: 备份与恢复
+title: 数据库索引
 order: 7
 ---
 
-# 索引
+# 数据库索引
 
 **索引**是对指定字段进行排序的数据结构。
 
@@ -17,47 +17,34 @@ order: 7
 
 Mongodb 的索引使用的 B-tree 这一特殊的数据结构，借助索引 Mongodb 可以高效的匹配到需要查询的数据：
 
-
 作者：wecatch
 链接：https://juejin.im/post/5ad1d2836fb9a028dd4eaae6
 来源：掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
-![](../../snapshots/mongodb/mongodb-indexes.jpg)
+![](../../assets/mongodb/mongodb-indexes.jpg)
 
-- 索引通常能够极大的提高查询的效率，如果没有索引，MongoDB在读取数据时必须扫描集合中的每个文件并选取那些符合查询条件的记录。
+- 索引通常能够极大的提高查询的效率，如果没有索引，MongoDB 在读取数据时必须扫描集合中的每个文件并选取那些符合查询条件的记录。
 - 这种扫描全集合的查询效率是非常低的，特别在处理大量的数据时，查询可以要花费几十秒甚至几分钟，这对网站的性能是非常致命的。
 - 索引是特殊的数据结构，索引存储在一个易于遍历读取的数据集合中，索引是对数据库表中一列或多列的值进行排序的一种结构
 
-
-
 **复合键索引可以对多个字段进行排序**
-
-
-
-
 
 合适的索引可以大大提升数据库搜索性能
 
 集合层面的索引
 
-
-
 ## 索引类型
 
 ### 单键索引
 
-![](../../snapshots/mongodb/mongodb-single-index.jpg)
+![](../../assets/mongodb/mongodb-single-index.jpg)
 
 ### 复合键索引
 
-![](../../snapshots/mongodb/mongodb-compound-index.jpg)
+![](../../assets/mongodb/mongodb-compound-index.jpg)
 
 ### 多键索引
-
-
-
-
 
 ## 索引特性
 
@@ -106,8 +93,6 @@ $ db.<collection>.createIndex({ <field>: <sort-value> }, { sparse: true })
 - 如何创建一个合适的索引
 - 索引对数据写入操作的影响
 
-
-
 ## 创建索引
 
 ```bash
@@ -143,13 +128,7 @@ $ db.<collection>.createIndex({ <field>: <sort-value> })
 
 `<options>` 文档定义了创建索引时可以使用的一些参数。`<options>` 文档也可以设定索引的特性。
 
-
-
 ## 查看索引
-
-
-
-
 
 ## 删除索引
 
@@ -167,40 +146,15 @@ db.<collection>.dropIndex("name_1")
 db.<collection>.dropIndex({ name: 1 })
 ```
 
-
-
-
-
-
-
 ## 索引效果
-
-
 
 `db.<collection>.explain().<method(...)>`
 
 可以使用 `explain` 进行分析的命令包括 `aggregate()`、`count()`、`distinct()`、`find()`、`group()`。
 
-
-
-
-
 winningPlan 数据库认为最有效的查询方法
-
-
 
 - COLLSCAN 低效查询
 - IXSCAN 高效
 
-
-
-
-
-
-
-
-
-
-
-
-
+* [MongoDB 索引与优化详解](https://juejin.im/post/5cc455f5f265da0389329c3b)

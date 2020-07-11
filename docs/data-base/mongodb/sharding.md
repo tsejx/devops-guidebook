@@ -5,9 +5,9 @@ nav:
 group:
   title: MongoDB
   order: 2
-title: 数据模型
+title: 数据库分片
 order: 9
 ---
 
-# 分片
+# 数据库分片
 

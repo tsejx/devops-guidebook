@@ -84,9 +84,15 @@ MongoDB 中的关系：
 
 
 
+- 静态方法 大规模使用的时候使用
+- 实例方法 具体事物使用的方法
+
+静态：想查找所有的故事书（而且以后经常查找），但不想每次都用原生方法 `Book.find({ catrgory: story })`，定义方法 `Book.isStory()`
+
+实例：想根据具体的一本书，查找类似的书，定义实例方法 `doc.isSimilar(xxx)`，调用者的具体实例
 
 
-
+https://www.cnblogs.com/chris-oil/p/9426270.html
 
 
 

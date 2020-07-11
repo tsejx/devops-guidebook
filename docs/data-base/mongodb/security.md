@@ -5,9 +5,9 @@ nav:
 group:
   title: MongoDB
   order: 2
-title: 数据模型
+title: 数据库安全
 order: 10
 ---
 
-# 安全
+# 数据库安全
 

@@ -1,4 +1,15 @@
-# 常见 MySQL 集群方案
+---
+nav:
+  title: 数据库
+  order: 3
+group:
+  title: MySQL
+  order: 10
+title: 集群方案
+order: 10
+---
+
+# 集群方案
 
 - Replication
   - 特点
