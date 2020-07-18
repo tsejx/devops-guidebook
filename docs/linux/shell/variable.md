@@ -40,8 +40,12 @@ l=ls
 
 # 将命令结果赋值给变量，使用 $() 或 ``
 letc=$(ls -l /etc)
-
 echo $letc
+
+# 在列表中添加值
+list="Guangzhou Shenzhen Zhuhai"
+list=$list" Huizhou"
+echo $list
 ```
 
 变量值有空格等特殊字符可以包含在 `""`（双引号）或 `''`（单引号）中。
