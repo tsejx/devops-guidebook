@@ -6,7 +6,7 @@ group:
   title: Nginx
   order: 1
 title: 代理服务器
-order: 4
+order: 5
 ---
 
 # 代理服务器
@@ -35,7 +35,7 @@ Nginx 的一个常见应用是将其设置为代理服务器（Proxy Server）�
 1. 安全及权限。可以看出，使用反向代理后，用户端将无法直接通过请求访问真正的内容服务器，而必须首先通过 Nginx。可以通过在 Nginx 层上将危险或者没有权限的请求内容过滤掉，从而保证了服务器的安全。
 2. 负载均衡。例如一个网站的内容被部署在若干台服务器上，可以把这些机子看成一个集群，那么 Nginx 可以将接收到的客户端请求“均匀地”分配到这个集群中所有的服务器上（内部模块提供了多种负载均衡算法），从而实现服务器压力的负载均衡。此外，nginx 还带有健康检查功能（服务器心跳检查），会定期轮询向集群里的所有服务器发送健康检查请求，来检查集群中是否有服务器处于异常状态，一旦发现某台服务器异常，那么在以后代理进来的客户端请求都不会被发送到该服务器上（直到后面的健康检查发现该服务器恢复正常），从而保证客户端访问的稳定性。
 
-## 代理配置
+## 基本配置
 
 首先，向 Nginx 的配置文件中添加一个 `server` 块来定义代理服务器：
 
@@ -95,7 +95,7 @@ server {
 
 这样，图片和其他请求就可以使用不同的服务器来处理。
 
-## 配置说明
+## 通用配置
 
 ```nginx
 server {
@@ -113,6 +113,8 @@ server {
 
         # 代理服务器指向的真正服务器地址
         proxy_pass http://127.0.0.1:8080
+
+        # 跳转重定向配置
         proxy_redirect default;
 
         # 头信息配置
@@ -121,18 +123,25 @@ server {
         # 请求 IP 传给真正服务器
         proxy_set_header    X-Real-IP     $remote_addr;
         # 请求协议传给真正服务器
-        proxy_set_header    X-Scheme      $scheme;
-        proxy_set_header X-Forward-For    $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Scheme          $scheme;
+        proxy_set_header    X-Forward-For     $proxy_add_x_forwarded_for;
 
         # 超时配置
         proxy_connect_timeout 30;
         proxy_send_timeout 60;
         proxy_read_timeout 60;
 
-        proxy_buffer_size 32k;
+        # 缓冲区配置
+        # 被代理服务器数据和客户端请求异步
         proxy_buffering on;
+        # 特殊 Buffer 大小
+        proxy_buffer_size 32k;
+        # 代理服务器可占用 Buffer 个数和每个 Buffer 大小
         proxy_buffers 4 128k;
         proxy_busy_buffers_size 256k;
+        # 临时文件目录及层级
+        proxy_temp_path /usr/local/nginx/proxy_temp 1 2;
+        # 临时文件总大小
         proxy_max_temp_file_size 256k;
 
         # 路径重写
@@ -141,3 +150,9 @@ server {
     }
 }
 ```
+
+---
+
+**参考资料：**
+
+- [📝 Nginx 反向代理之 proxy_buffering](https://www.cnblogs.com/yyxianren/p/10831673.html)

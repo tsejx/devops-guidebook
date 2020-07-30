@@ -5,11 +5,11 @@ nav:
 group:
   title: Nginx
   order: 1
-title: 命令行操作
+title: 命令行指令
 order: 2
 ---
 
-# 命令行操作
+# 命令行指令
 
 ## 安装教程
 
@@ -126,15 +126,16 @@ nginx -g
 # 指定运行目录
 nginx -p
 
-# 测试配置文件是否有语法错误
-nginx -t
-
 # 版本信息
 nginx -v
 
-# 检查配置文件
+# 测试配置文件是否有语法错误
+# 同时显示主配置文件路径
+nginx -t
+
+# 检查指定的配置文件
 nginx -t -c /etc/nginx/nginx.conf
 
-# 重启
+# 重启 Nginx 服务
 systemctl restart nginx.service
 ```
