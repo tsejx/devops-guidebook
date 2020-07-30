@@ -24,6 +24,8 @@
   "homepage": "https://tsejx.github.io/devops-guidebook/",
   "devDependencies": {
     "dumi": "^1.0.33",
-    "lint-md": "^0.1.1"
+    "lint-md": "^0.1.1",
+    "prism-react-renderer": "^1.1.1",
+    "prismjs": "^1.20.0"
   }
 }
