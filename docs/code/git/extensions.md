@@ -1,9 +1,9 @@
 ---
 nav:
-  title: 版本管理
+  title: 代码管理
   order: 5
 title: 扩展
-order: 10
+order: 99
 ---
 
 # 扩展

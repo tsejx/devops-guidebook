@@ -1,9 +1,9 @@
 ---
 nav:
-  title: 版本管理
+  title: 代码管理
   order: 5
 title: Q&A
-order: 20
+order: 100
 ---
 
 # Q&A
@@ -163,7 +163,7 @@ https://github.com/tsejx/Git-Guidebook.git
 查看当前项目链接远程仓库地址
 
 ```bash
-$ git remote -v
+git remote -v
 ```
 
 第一种：通过命令行直接修改远程地址
@@ -216,10 +216,10 @@ git reset --merge HEAD^
 
 ```bash
 # 查看忽略大小写配置项
-$ git config core.ignorecase
+git config core.ignorecase
 
 # 设置大小写敏感为敏感
-$ git config core.ignorecase false
+git config core.ignorecase false
 ```
 
 ## github fork 项目与原项目保持同步
@@ -231,23 +231,23 @@ $ git config core.ignorecase false
 
 ```bash
 # 1. 把 fork 后的仓库克隆到本地
-$ git clone https://github.com/tsejx/vue.git
+git clone https://github.com/tsejx/vue.git
 
 # 2. 进入根目录，增加远程分支（fork 的分支），名为 update_stream（自定义）到本地
-$ git remote add update_stream https://github.com/vue/vue.git
+git remote add update_stream https://github.com/vue/vue.git
 
 # 3. 检查状态
 # 通过以下命令会发现多出 update_stream 的远程分支
-$ git remote -v
+git remote -v
 
 # 4. 把远程分支 update_stream 的代码拉取到本地
-$ git fetch update_stream
+git fetch update_stream
 
 # 5. 合并对方远程原始分支 update_stream 的代码
-$ git merge update_stream/master
+git merge update_stream/master
 
 # 6. 把最新的代码推送到你的 Github 上
-$ git push origin master
+git push origin master
 
 # 7. 如果需要给 update_stream 发送 Pull Request
 ```
@@ -268,9 +268,9 @@ fatal: refusing to merge unrelated histories
 只需要在操作命令后加上 `--allow-unrelated-histories` 即可解决。
 
 ```bash
-$ git merge master --allow-unrelated-histories
+git merge master --allow-unrelated-histories
 
-$ git pull origin master --allow-unrelated-histories
+git pull origin master --allow-unrelated-histories
 ```
 
 ## 本地仓库与远程地址的 SSH 不匹配
@@ -327,8 +327,8 @@ git fetch origin --prune
 
 ```bash
 # 格式
-$ git remote set-url origin git+ssh://git@github.com/<username>/<repository-name>.git
+git remote set-url origin git+ssh://git@github.com/<username>/<repository-name>.git
 
 # 例如
-$ git remote set-url origin git+ssh://git@github.com/tsejx/git-guidebook.git
+git remote set-url origin git+ssh://git@github.com/tsejx/git-guidebook.git
 ```
