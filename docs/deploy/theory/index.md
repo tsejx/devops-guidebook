@@ -128,6 +128,5 @@ order: 2
 - [Gitlab CI&CD 实战经验分享](https://zhuanlan.zhihu.com/p/51163261)
 - [前端 Docker + Gitlab CI 的持续集成](https://zhuanlan.zhihu.com/p/44748907)
 - [部署基于 Gitlab + Docker + Rancher + Harbor 的前端项目这一篇就够了](https://zhuanlan.zhihu.com/p/94844844)
-
-* [从零开始搭建一个前端资源自动化构建发布系统](https://zhuanlan.zhihu.com/p/38139513)
-* [这些年的体验技术部：Node.js 基础服务 摸爬滚打才不负功名尘土](https://zhuanlan.zhihu.com/p/84176287)
+- [从零开始搭建一个前端资源自动化构建发布系统](https://zhuanlan.zhihu.com/p/38139513)
+- [这些年的体验技术部：Node.js 基础服务 摸爬滚打才不负功名尘土](https://zhuanlan.zhihu.com/p/84176287)

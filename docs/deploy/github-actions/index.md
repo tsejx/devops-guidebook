@@ -27,6 +27,8 @@ workflow 文件的配置字段非常多，详见 [官方文档](https://help.git
 
 ---
 
+**参考资料：**
+
 - [Github Actions Market](https://github.com/marketplace?utf8=%E2%9C%93&type=actions&query=deploy)
 - [真香！GitHub Action 一键部署](https://didiheng.com/front/2019-12-11.html#github-action%E9%85%8D%E7%BD%AE)
 - [Github Actions 介绍&自动构建 Github Pages 博客](https://www.dazhuanlan.com/2020/01/21/5e2703d7a9999/)
@@ -36,3 +38,4 @@ workflow 文件的配置字段非常多，详见 [官方文档](https://help.git
 - [使用 Github Action 进行前端自动化发布](https://yq.aliyun.com/articles/750065)
 - [Github Actions 手册](https://www.jianshu.com/p/161b4241bc09)
 - [Github 操作文档](https://docs.github.com/cn/actions)
+- [编写自己的 GitHub Action，体验自动化部署](https://zhuanlan.zhihu.com/p/103552188)
