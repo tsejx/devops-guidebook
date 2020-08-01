@@ -5,7 +5,7 @@ const config = {
   base: '/devops-guidebook/',
   publicPath: '/devops-guidebook/',
   favicon: './favicon.ico',
-  logo: '/favicon.png',
+  logo: 'http://img.mrsingsing.com/devops-icon.png',
   exportStatic: {},
   dynamicImport: {},
   navs: [
