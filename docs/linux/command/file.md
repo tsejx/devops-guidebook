@@ -30,6 +30,7 @@ order: 3
   - `head` 在屏幕上显示指定文件的开头若干行
   - `less` 分屏上下范爷浏览文件内容
   - `more` 显示文件内容，每次显示一屏
+  - `cut` 用来显示行的指定部分，删除文件中的指定字段
 - 文件编辑
   - `vi` 功能强大的纯文本编辑器
   - `sed` 自动编辑文件，简化对文件的反复操作
@@ -147,6 +148,12 @@ which ifconfig
 ```bash
 # 查找用户遗留的文件和目录
 find / -name ftpusername
+
+# 任意字符以 wd 结尾
+find /etc -regex .*wd
+
+# 找到某个文件多久以前创建的（8 小时前更新）
+find /etc/ -atime 8
 ```
 
 ## 文件查看
@@ -195,6 +202,13 @@ head -100 README.md | tail -1
 既然 cat 有这个问题，针对比较大的文件，我们就可以使用 less 命令打开某个文件。
 类似 vim，less 可以在输入/后进入查找模式，然后按 n(N)向下(上)查找。
 有许多操作，都和 vim 类似，你可以类比看下。
+
+### cut
+
+```bash
+# 查看 /etc/passwd 文件中使用最多的 Shell 脚本
+cut -d ":" -f7 /etc/passwd | sort | uniq -c | sort -r
+```
 
 ### wc
 

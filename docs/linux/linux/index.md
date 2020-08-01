@@ -11,6 +11,13 @@ order: 1
 
 # 基本概要
 
+```jsx | inline
+import React from 'react';
+import img from '../../assets/linux/linux-perf-tools-full.png';
+
+export default () => <img alt="Linux Performance Tools" src={img} width="900" />;
+```
+
 - 常用命令
 - 软件包
 - 用户和用户组管理

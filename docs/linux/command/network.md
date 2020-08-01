@@ -30,7 +30,11 @@ order: 2
   - `netstat`
 - 网络安全
   - `ssh` openssh 套件中的客户端连接工具
+  - `ssh-keyscan`
+  - `ssh-copy-id`
   - `ssh-keygen` 为 SSH 生成、管理和转换认证密钥
+  - `ssh-add` 把专用密钥添加到 `ssh-agent` 的高速缓存中
+  - `ssh-agent` 控制用来保存公钥身份验证所使用的私钥程序
 - 网络配置
   - `ifconfig` 配置和显示系统网卡的网络参数
   - `route` 查看网关命令
@@ -64,24 +68,61 @@ wget --ftp-user=USERNAME --ftp-parssword=PASSWORD url
 
 ### iptables
 
-防火墙
+防火墙分为软件防火墙和硬件防火墙。
+
+防火墙又可以分为包过滤防火墙和应用层的防火墙。
+
+- CentOS 6 默认的防火墙是 `iptables`
+- CentOS 7 默认的防火墙是 `firewallD`（底层使用 `netfilter`）
+
+规则表：
+
+- filter
+- nat
+- mangle
+- raw
+
+规则链：
+
+- INPUT / OUTPUT / FORWARD
+- PREROUTING / POSTROUTING
 
 ```bash
-启动： systemctl start firewalld
-关闭： systemctl stop firewalld
-查看状态： systemctl status firewalld
-开机禁用  ： systemctl disable firewalld
-开机启用  ： systemctl enable firewalld
-```
+# 查看 filter 表的几条链规则（INPUT 链可以看出开放了哪些端口）
+iptables -t filter -L -n
 
-放行 TCP 80 端口
-
-```bash
-firewall-cmd --add-port=80/tcp --permanent
-```
-
-```bash
+# filter 表是默认查询的表，可以省略 -t 选项
 iptables -L -n
+
+# 查看 NAT 表的链规则
+iptables -t nat -L -n
+
+# 查看所有 iptables 规则
+iptables -vnL
+
+# 为 INPUT 链添加规则（开放 8080 端口）
+iptables -I INPUT -p tcp --dport 8080 -j ACCEPT
+
+# 清除防火墙所有规则
+# 删除所有自定义链
+iptables -F
+
+iptables -X
+
+iptables -Z
+
+# 查找规则所在行号
+iptables -L INPUT --line-numbers -n
+
+# 根据行号删除过滤规则（关闭 8080 端口），下面的 1 是上面找到的规则所在的行号
+iptables -D INPUT 1
+
+# 放行 TCP 80 端口
+firewall-cmd --add-port=80/tcp --permanent
+
+# 搜索 iptables 规则
+# $table 改为你想搜索的表，$string 改为你要搜索的字符串
+iptables -L $table -v -n | grep $string
 ```
 
 -A 参数就看成是添加一条 INPUT 的规则
@@ -92,6 +133,42 @@ iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
 ```
 
+常用的防火墙规则：
+
+```bash
+# 屏蔽某个 IP 地址
+iptables -A INPUT -s xxx.xxx.xxx.xxx -j DROP
+
+# 如果只想屏蔽来自某个 IP 地址的 TCP 流量，可以用 -p 指定协议
+iptables -A INPUT -p tcp -s xxx.xxx.xxx.xxx -j DROP
+
+# 取消屏蔽某个 IP 地址
+iptables -D INPUT -s xxx.xxx.xxx.xxx -j DROP
+
+# 屏蔽基于某个端口的传出连接
+iptables -A OUTPUT -p tcp --dport xxx -j DROP
+
+# 允许基于某个端口的传入连接
+iptables -A INPUT -p tcp --dport xxx -j ACCEPT
+
+# 将某个服务的流量转发到另一个端口
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 25 -j REDIRECT --to-port 2525
+
+# DDoS 屏蔽
+iptables -A INPUT -p tcp --dport 80 -m limit --limit 100/minute --limit-burst 200 -j ACCEPT
+```
+
+iptables 防火墙的配置文件：
+
+- `/etc/sysconfig/iptables`
+- CentOS 6
+  - `service iptables save | start | stop | restart`
+- CentOS 7
+
+  - `yum install iptables-services`
+
+- [Linux iptables 命令](https://wangchujiang.com/linux-command/c/iptables.html)
+- [Linux：25 个有用的 iptables 防火墙规则](http://www.codebelief.com/article/2017/08/linux-25-useful-iptables-firewall-rules/)
 - [CentOS7 firewalld 打开关闭端口](https://www.cnblogs.com/mymelody/p/10490776.html)
 
 ## 网络测试
@@ -106,7 +183,7 @@ $ nslookup <domain>
 $ nslookup -qt = <type> <domain>
 ```
 
-**type 参数**
+#### type 参数
 
 - `A` 地址记录
 - `AAAA` 地址记录
@@ -201,6 +278,9 @@ netstat -ant | grep "192.168.25.*" | awk '{print $5}' | awk -F: '{print $1}' | s
 # 找出程序运行的端口
 netstat -ap | grep ssh
 
+# 或者
+netstat -alnt | grep tcp
+
 # 根据端口查看这个进程的 PID
 netstat -lnp | grep 8080
 ```
@@ -233,12 +313,6 @@ ssh -C user@hostname
 # 指定 ssh 源地址
 如果你的 ssh 客户端多于两个以上的 IP 地址，可以使用 `-b` 选项来指定一个 IP地址。
 
-# 查看是否已经添加了对应主机的s ssh 密钥
-ssh-keygen -F hostname
-
-# 删除对应主机的 SSH 访问密钥
-ssh-keygen -R hostname
-
 # 登录远程主机后执行某个命令
 ssh username@hostname "ls /home/omd"
 
@@ -262,6 +336,74 @@ service sshd start
 
 # 关闭 ssh 服务
 service sshd stop
+
+# 在 Github 添加了公钥后进行连接，用于验证 Key
+ssh -T git@github.com
+```
+
+### ssh-keygen
+
+查看是否已经存在 SSH 密钥：
+
+```bash
+cd ~/.ssh
+ls
+```
+
+如果，提示不存在此目录，则进行第二步操作，否则，你本机已经存在 SSH 公钥和私钥，可以略过第二步，直接进入第三步操作。
+
+```bash
+# 生成 SSH 秘钥
+ssh-keygen -t rsa -C "your_email@example.com"
+```
+
+- `-t`：指定密钥类型，默认是 RSA，可以省略
+- `-C`：设置注释文字，比如邮箱
+- `-f`：指定密钥文件存储文件名
+
+根据提示，需要指定文件位置和密码，如果是你足够放心，其实都可以直接回车，不需要什么密码。执行完以后，可在 `/C/Users/you/.ssh/` 路径下看到刚生成的文件：`id_rsa` 和 `id_rsa.pub`，即公钥和私钥。
+
+```bash
+# 查看是否已经添加了对应主机的 SSH 密钥
+ssh-keygen -F hostname
+
+# 删除对应主机的 SSH 访问密钥
+ssh-keygen -R hostname
+```
+
+### ssh-add
+
+`ssh-add` 命令用于把专用密钥添加到 `ssh-agent` 的高速缓存中。
+
+```bash
+# 把专用密钥添加到 ssh-agent 的高速缓存中
+ssh-add ~/.ssh/id_rsa
+
+# 从 ssh-agent 中删除密钥
+ssh-add -d ~/.ssh/id_xxx.pub
+
+# 删除 ssh-agent 中所有密钥
+ssh-add -D
+
+# 查看 ssh-agent 中的密钥
+ssh-add -l
+
+# 查看 ssh-agent 中的公钥
+ssh-add -L
+
+# 设置密钥超时时间，超时 ssh-agent 将自动卸载密钥
+ssh-add -t <life>
+```
+
+### ssh-agent
+
+`ssh-agent` 命令是一种控制用来保存公钥身份验证所使用的私钥程序。
+
+`ssh-agent` 在 X 会话或登录会话之初启动，所有其他窗口或程序则以客户端程序的身份启动并加入到 `ssh-agent` 程序中。通过使用环境变量，可定位代理并在登录到其他使用 `ssh` 机器上时使用代理自动进行身份验证。
+
+```bash
+# 生成 Bourne Shell 风格命令输出
+ssh-agent -s
 ```
 
 ## 网络配置
@@ -293,11 +435,11 @@ CentOS 7 使用了一致性网络设备命名，以上都不匹配则使用 `eth
 ifconfig
 
 lo0: flags=8049<UP,LOOPBACK,RUNNING,MULTICAST> mtu 16384
-	options=1203<RXCSUM,TXCSUM,TXSTATUS,SW_TIMESTAMP>
-	inet 127.0.0.1 netmask 0xff000000
-	inet6 ::1 prefixlen 128
-	inet6 fe80::1%lo0 prefixlen 64 scopeid 0x1
-	nd6 options=201<PERFORMNUD,DAD>
+options=1203<RXCSUM,TXCSUM,TXSTATUS,SW_TIMESTAMP>
+inet 127.0.0.1 netmask 0xff000000
+inet6 ::1 prefixlen 128
+inet6 fe80::1%lo0 prefixlen 64 scopeid 0x1
+nd6 options=201<PERFORMNUD,DAD>
 ```
 
 - `en5`：网卡名称
