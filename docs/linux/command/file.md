@@ -56,25 +56,31 @@ order: 3
 
 ### scp
 
-scp（secure copy）用来进行文件传输。也可以用来传输目录。也有更高级的 sftp 命令。
+scp（secure copy）用来进行文件传输。也可以用来传输目录。也有更高级的 `sftp` 命令。
 
 ```bash
 # 本地复制远程文件
+# scp <remote-address> <local-address>
 scp username@hostname:/usr/test/test.tar.gz /temp/test.tar.gz
 
 # 远程复制本地文件
+# scp <local-address> <remote-address>
 scp /temp/test.tar.gz username@hostname:/usr/test/test.tar.gz
 
 # 本地复制远程目录
+# scp -r <remote-address> <loacal-address>
 scp -r username@hostname:/usr/test/test.tar.gz /temp/test.tar.gz
 
 # 远程目录复制至本地目录
+# scp -r <local-address> <remote-address>
 scp -r /temp/test.tar.gz username@hostname:/usr/test/test.tar.gz
 
 # 本地复制远程文件到指定目录
+# scp <remote-address> <local-address>
 scp username@hostname:/usr/test/test.tar.gz /temp/test/
 
 # 远程复制到本地文件到指定目录
+# scp -r <local-address> <remote-address>
 scp /temp/test.tar.gz username@hostname:/usr/test/test/tar.gz
 ```
 

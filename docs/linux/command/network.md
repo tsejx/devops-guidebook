@@ -19,14 +19,14 @@ order: 2
   - `ip` 网络配置工具
   - `iptables` 防火墙软件
 - 网络测试
-  - `iperf` 网络性能测试工具
+  - `iperf` 网络性能测试工具，可用于测试 TCP 和 UDO 带宽质量
   - `host` 常用的分析域名查询工具
   - `nslookup` 查询域名 DNS 信息的工具
   - `dig` 域名查询工具
   - `ping` 测试主机之间网络的联通性
   - `netstat` 查看网络系统状态信息
-  - `traceroute`
-  - `tcpdump`
+  - `traceroute` 追踪数据包在网络上的传输时的全部路径
+  - `tcpdump` 打印所有经过网络接口的数据包的头信息
   - `netstat`
 - 网络安全
   - `ssh` openssh 套件中的客户端连接工具
@@ -158,14 +158,15 @@ iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 25 -j REDIRECT --to-port 25
 iptables -A INPUT -p tcp --dport 80 -m limit --limit 100/minute --limit-burst 200 -j ACCEPT
 ```
 
-iptables 防火墙的配置文件：
+`iptables` 防火墙的配置文件：
 
 - `/etc/sysconfig/iptables`
 - CentOS 6
   - `service iptables save | start | stop | restart`
 - CentOS 7
-
   - `yum install iptables-services`
+
+扩展资料：
 
 - [Linux iptables 命令](https://wangchujiang.com/linux-command/c/iptables.html)
 - [Linux：25 个有用的 iptables 防火墙规则](http://www.codebelief.com/article/2017/08/linux-25-useful-iptables-firewall-rules/)
@@ -173,29 +174,74 @@ iptables 防火墙的配置文件：
 
 ## 网络测试
 
+### host
+
+`host` 命令是常用的分析域名查询工具，可以用来测试域名系统工作是否正常。
+
+```bash
+# 基本用法
+host taobao.com
+
+# 显示详细的 DNS 信息
+host -a taobao.com
+```
+
 ### nslookup
 
 ```bash
-# 查询域名
-$ nslookup <domain>
+# 查询域名 的 A 记录
+# - domain 查询的域名
+# - dns-server 指定解析的 DNS 服务器
+nslookup <domain> <dns-server>
+
+nslookup baidu.com
+
+nslookup baidu.com 8.8.8.8
 
 # 查询其他记录
-$ nslookup -qt = <type> <domain>
+nslookup -qt = <type> <domain>
+
+nslookup -qt=mx baidu.com 8.8.8.8
+
+# 查询更距离的信息
+nslookup -d <domain>
+
+nslookup -d baidu.com
+
+# 完全响应信息
+nslookup -debug baidu.com
 ```
 
-#### type 参数
+`type` 参数：
 
-- `A` 地址记录
-- `AAAA` 地址记录
-- `CNAME` 别名记录
+- `A`：地址记录
+- `AAAA`：地址记录
+- `CNAME`：别名记录
+
+建议使用 [dig](#dig) 替代 `nslookup` 命令。
+
+### dig
+
+```bash
+# 基本用法
+dig taobao.com
+
+# 反向解析
+dig -x 140.205.94.189
+
+# 查看域授权的 DNS 服务器
+dig taobao.com +nssearch
+```
 
 ### ping
 
-用于探测网络通不通（不包括那些禁 ping 的网站）
+用于检测网络的联通情况和分析网络速度，并根据域名得到服务器 IP（不包括那些禁 ping 的网站）
 
 ```bash
-# 检查 网络
+# 检查网络联通
 ping xx.xx.xx.xx
+
+ping taobao.com
 ```
 
 ### netstat
