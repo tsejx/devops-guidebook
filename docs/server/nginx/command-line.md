@@ -34,6 +34,7 @@ cd /etc/yum.repos.d
 vim nginx.repo
 
 # 添加
+[nginx]
 name=nginx repo
 baseurl=http://nginx.org/packages/centos/7/$basearch/
 gpgcheck=0
