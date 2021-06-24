@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  mongo_db:
+    build:
+      context: .
+      dockerfile: mongo-Dockerfile
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - "/home/volumes/mongo:/data/db"
+      - "/etc/localtime:/etc/localtime"

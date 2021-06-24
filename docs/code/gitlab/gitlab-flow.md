@@ -38,3 +38,8 @@ export default () => <img alt="gitlab-flow-vd" src={img} width="480" />;
 
 以后，只有修补 BUG，才允许将代码合并到这些分支，并且此时要更新小版本号。
 
+--
+
+**参考资料：**
+
+- [字节研发设施下的 Git 工作流](https://juejin.cn/post/6875874533228838925)

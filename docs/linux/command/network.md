@@ -329,6 +329,9 @@ netstat -alnt | grep tcp
 
 # 根据端口查看这个进程的 PID
 netstat -lnp | grep 8080
+
+# 查看网络状况
+netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
 ```
 
 此命令，在找一些本地起了什么端口之类的问题上，作用很大。

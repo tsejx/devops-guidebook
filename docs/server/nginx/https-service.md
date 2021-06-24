@@ -64,7 +64,7 @@ server {
 ```nginx
 server {
     listen  80;
-    listen  443 ssl;
+    listen  443 ssl http2 default_server;
 
     # 公钥，发送到连接服务器的客户端
     ssl_certificate         cert/example.com.pem;
