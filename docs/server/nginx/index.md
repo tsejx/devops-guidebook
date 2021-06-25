@@ -90,3 +90,4 @@ nginx -V
 **参考资料：**
 
 - [📝 Nginx 工作原理（Master+Worker）](https://www.cnblogs.com/yblackd/p/12194143.html)
+- [📝 Nginx 最全操作总结](https://mp.weixin.qq.com/s/ZaKUtj7NgRSI72m5S4quDg)

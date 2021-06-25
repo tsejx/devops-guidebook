@@ -28,7 +28,7 @@ CentOS 7 默认使用的 Shell 是 bash。
 - `#` 号开头的注释
 - `chmod u+rx filename` 可执行权限
 - 执行命令
-  - `bash ./filename.sh`（使用 bash 执行不需要赋予执行权限8）
+  - `bash ./filename.sh`（使用 bash 执行不需要赋予执行权限 8）
   - `./filename.sh`（需要可执行权限）
   - `source ./filename.sh`（对当前运行环境造成影响）
   - `.filename.sh`
@@ -37,7 +37,6 @@ CentOS 7 默认使用的 Shell 是 bash。
 
 - 内建命令不需要创建子进程
 - 内建命令对当前 Shell 生效
-
 
 ---
 
@@ -95,6 +94,6 @@ mktemp 命令，trap 命令
 **参考资料：**
 
 - [Shell 脚本：Linux Shell 脚本学习指南](http://c.biancheng.net/shell/)
-- [](http://billie66.github.io/TLCL/book/index.html)
+- [TLCL](http://billie66.github.io/TLCL/book/index.html)
 - [3000 字扫盲 Shell 基础知识](https://juejin.im/post/5ef009b86fb9a058b10aaa28)
-- [](https://wangdoc.com/bash/startup.html)
+- [Bash 脚本教程](https://wangdoc.com/bash/index.html)
