@@ -151,7 +151,17 @@ which ifconfig
 
 ### find
 
+`find` 命令用于在指定目录下查找文件。任何位于参数之前的字符串都将被视为欲查找的目录名。如果使用该命令时，不设置任何参数，则 `find` 命令将在当前目录下查找子目录与文件。并且将查找到的子目录和文件全部进行显示。
+
+[详细命令参数](https://wangchujiang.com/linux-command/c/find.html)
+
 ```bash
+# 列出当前目录及子目录下所有文件和文件夹
+find .
+
+# 在 /home 目录下查找以 .txt 结尾的文件名
+find /home -name "*.txt"
+
 # 查找用户遗留的文件和目录
 find / -name ftpusername
 
@@ -160,6 +170,32 @@ find /etc -regex .*wd
 
 # 找到某个文件多久以前创建的（8 小时前更新）
 find /etc/ -atime 8
+```
+
+根据文件类型进行搜索
+
+```bash
+find . type <类型参数>
+```
+
+类型参数列表：
+
+- `f`：普通文件
+- `l`：符号连接
+- `d`：目录
+- `c`：字符设备
+- `b`：块设备
+- `s`：套接字
+- `p`：Fifo
+
+基于目录深度搜索：
+
+```bash
+# 向下最大深度限制为 3
+find . -maxdepth 3 -type f
+
+# 搜索出深度距离当前目录至少 2 个子目录的所有文件
+find . mindepth 2 -type f
 ```
 
 ## 文件查看

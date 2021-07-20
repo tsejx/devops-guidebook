@@ -5,11 +5,11 @@ nav:
 group:
   title: 命令分类
   order: 1
-title: 常用工具
+title: 其他命令
 order: 7
 ---
 
-# 常用工具
+# 其他命令
 
 ## date
 

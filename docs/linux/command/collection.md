@@ -5,11 +5,11 @@ nav:
 group:
   title: 命令分类
   order: 1
-title: 指令合集
+title: 命令大全
 order: 20
 ---
 
-# 指令合集
+# 命令大全
 
 ## 文件管理
 
