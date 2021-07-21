@@ -37,23 +37,41 @@ str3='helloworld'
   - 不被引号包围的字符串中出现变量时也会被解析，这一点和双引号 `""` 包围的字符串一样
   - 字符串中不能出现空格，否则空格后边的字符串会作为其他变量或者命令解析
 
-### 获取字符串长度
+### 字符串长度
+
+- 获取字符串变量的长度
 
 ```bash
-# 格式
-${#string_name}
+STR="Hello world!"
 
-# 示例
-str="Hello world!"
+echo ${#STR}
+# 输出：12
+```
 
-echo ${#str}
+- 获取字符串字节数
+
+```bash
+STR="Hello world!"
+
+COUNT_BYTE=`echo "$STR" | wc -c`
+
+echo $COUNT_BYTE
+# 输出：13
+```
+
+- 获取字符串字数
+
+```bash
+STR="I am a man"
+COUNT_WORD=`echo "$STR" | wc -w`
+
+echo $COUNT_WORD　　
+# 输出：4
 ```
 
 ### 字符串拼接
 
 ```bash
-#!/bin/bash
-
 foo="Hello"
 bar="world"
 
@@ -73,9 +91,37 @@ str4="$foo: $bar"
 str5="${foo}Script: ${bar}index.html"
 ```
 
+### 字符串比较
+
+字符串相等：
+
+```bash
+USER_NAME="terry"
+
+if [[ "$USER_NAME" = "terry" ]]; then
+  echo "I am terry"
+fi
+```
+
+字符串不相等：
+
+```bash
+USER_NAME="tom"
+
+if [[ "$USER_NAME" != "terry" ]]; then
+  echo "I am not terry"
+fi
+```
+
 ### 字符串截取
 
 这种方式需要两个参数：除了指定起始位置，还需要截取长度，才能最终确定要截取的字符串。
+
+获取后缀名：
+
+```bash
+ls -al | cut -d “.” -f2
+```
 
 #### 从字符串左边开始计数
 
@@ -182,4 +228,3 @@ unset array_name
 ```
 
 那么就是删除整个数组，所有元素都会消失。
-
