@@ -82,9 +82,8 @@ git checkout -b branchA v1.0.0
 # 删除本地标签
 git tag -d <tag-name>
 
-
 # 删除远程标签
-git push origin <tag-name>
+git push --delete origin <tag-name>
 ```
 
 ## 推送标签
