@@ -19,7 +19,7 @@ order: 1
   - `w` 显示目前登入系统的用户信息
   - `watch` 周期性执行给定的指令
   - `pidof` 查找指定名称的进程的进程 ID 号
-  - `ps` 报告当前系统的进程状态
+  - [`ps`](#ps) 报告当前系统的进程状态
   - `telint` 切换当前正在运行系统的运行等级
   - `init` 所有 Linux 进程的父进程
   - `at` 在指定时间执行一个任务
@@ -135,7 +135,7 @@ $ systemctl --failed
 
 ### ps
 
-ps 命令能够看到进程/线程状态。和 top 有些内容重叠，常用。
+`ps` 命令用于报告当前系统的进程状态。
 
 ```bash
 # 查看进程信息
@@ -143,12 +143,6 @@ ps <pid>
 
 # 找到 java 进程
 ps -ef | grep java
-
-# 在所有程序中查找 nginx
-# -a 显示所有终端机下执行的程序
-# -u 列出该用户的程序的状况
-# -v 同 -a
-ps aux | grep nginx
 
 #
 ps -elf
@@ -159,6 +153,45 @@ ps -e | more
 
 - 进程也是树形结构
 - 进程和权限有着密不可分的关系
+
+列出目前所有正在内存当中的程序：
+
+```bash
+ps aux
+
+# Output
+# USER               PID  %CPU %MEM      VSZ    RSS   TT  STAT STARTED      TIME COMMAND
+# kenny             6155  21.3  1.7  7969944 284912   ??  S    二03下午 199:14.14 /Appl...OS/WeChat
+# kenny              559  20.4  0.8  4963740 138176   ??  S    二03下午  33:28.27 /Appl...S/iTerm2
+# _windowserver      187  18.0  0.6  7005748  95884   ??  Ss   二03下午 288:44.97 /Syst...Light.WindowServer -daemon
+# kenny             1408  10.7  2.1  5838592 347348   ??  S    二03下午 138:51.63 /Appl...nts/MacOS/Google Chrome
+# kenny              327   5.8  0.5  5771984  79452   ??  S    二03下午   2:51.58 /Syst...pp/Contents/MacOS/Finder
+
+# 在所有程序中查找 nginx
+# -a 显示所有终端机下执行的程序
+# -u 列出该用户的程序的状况
+# -v 同 -a
+ps aux | grep nginx
+
+# 列出类似程序树的程序显示
+ps -axjf
+```
+
+- USER：该 process 属于那个使用者账号的
+- PID ：该 process 的号码
+- %CPU：该 process 使用掉的 CPU 资源百分比
+- %MEM：该 process 所占用的物理内存百分比
+- VSZ ：该 process 使用掉的虚拟内存量 (Kbytes)
+- RSS ：该 process 占用的固定的内存量 (Kbytes)
+- TTY ：该 process 是在那个终端机上面运作，若与终端机无关，则显示 ?，另外， tty1-tty6 是本机上面的登入者程序，若为 pts/0 等等的，则表示为由网络连接进主机的程序。
+- STAT：该程序目前的状态，主要的状态有
+- R ：该程序目前正在运作，或者是可被运作
+- S ：该程序目前正在睡眠当中 (可说是 idle 状态)，但可被某些讯号 (signal) 唤醒。
+- T ：该程序目前正在侦测或者是停止了
+- Z ：该程序应该已经终止，但是其父程序却无法正常的终止他，造成 zombie (疆尸) 程序的状态
+- START：该 process 被触发启动的时间
+- TIME ：该 process 实际使用 CPU 运作的时间
+- COMMAND：该程序的实际指令
 
 ### pstree
 

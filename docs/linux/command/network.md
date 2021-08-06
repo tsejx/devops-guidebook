@@ -12,34 +12,95 @@ order: 2
 # 网络管理
 
 - 网络应用
-  - `curl` 利用 URL 规则在命令行下工作的文件传输工具
-  - `wget` 下载文件工具
-  - `telnet` 登录远程主机和管理
+  - [`curl`](#curl) 利用 URL 规则在命令行下工作的文件传输工具
+  - [`wget`](#wget) 下载文件工具
+  - [`telnet`](#telnet) 登录远程主机和管理
 - 高级网络
-  - `ip` 网络配置工具
-  - `iptables` 防火墙软件
+  - [`ip`](#ip) 网络配置工具
+  - [`iptables`](#iptables) 防火墙软件
 - 网络测试
-  - `iperf` 网络性能测试工具，可用于测试 TCP 和 UDO 带宽质量
-  - `host` 常用的分析域名查询工具
-  - `nslookup` 查询域名 DNS 信息的工具
-  - `dig` 域名查询工具
-  - `ping` 测试主机之间网络的联通性
-  - `netstat` 查看网络系统状态信息
-  - `traceroute` 追踪数据包在网络上的传输时的全部路径
-  - `tcpdump` 打印所有经过网络接口的数据包的头信息
-  - `netstat`
+  - [`iperf`](#iperf) 网络性能测试工具，可用于测试 TCP 和 UDO 带宽质量
+  - [`host`](#host) 常用的分析域名查询工具
+  - [`nslookup`](#nslookup) 查询域名 DNS 信息的工具
+  - [`dig`](#dig) 域名查询工具
+  - [`ping`](#ping) 测试主机之间网络的联通性
+  - [`netstat`](#netstat) 查看网络系统状态信息
+  - [`traceroute`](#traceroute) 追踪数据包在网络上的传输时的全部路径
+  - [`tcpdump`](#tcpdump) 打印所有经过网络接口的数据包的头信息
 - 网络安全
-  - `ssh` openssh 套件中的客户端连接工具
-  - `ssh-keyscan`
-  - `ssh-copy-id`
-  - `ssh-keygen` 为 SSH 生成、管理和转换认证密钥
-  - `ssh-add` 把专用密钥添加到 `ssh-agent` 的高速缓存中
-  - `ssh-agent` 控制用来保存公钥身份验证所使用的私钥程序
+  - [`ssh`](#ssh) openssh 套件中的客户端连接工具
+  - [`ssh-keyscan`](#ssh-keyscan)
+  - [`ssh-copy-id`](#ssh-copy-id)
+  - [`ssh-keygen`](#ssh-keygen) 为 SSH 生成、管理和转换认证密钥
+  - [`ssh-add`](#ssh-add) 把专用密钥添加到 `ssh-agent` 的高速缓存中
+  - [`ssh-agent`](#ssh-agent) 控制用来保存公钥身份验证所使用的私钥程序
 - 网络配置
-  - `ifconfig` 配置和显示系统网卡的网络参数
-  - `route` 查看网关命令
+  - [`ifconfig`](#ifconfig) 配置和显示系统网卡的网络参数
+  - [`route`](#route) 查看网关命令
 
 ## 网络应用
+
+### curl
+
+`curl` 命令是一个利用 URL 规则在命令行下工作的文件传输工具。
+
+[详细命令参数](https://wangchujiang.com/linux-command/c/curl.html)
+
+```bash
+# 文件下载（不显示进度）
+curl URL --silent
+
+# 使用选项 -o 将下载的数据写入到文件，必须使用文件的绝对地址
+curl http://example.com/text.iso --o filename.iso --progress
+
+# 使用选项 -H 设置请求的头部信息
+curl -H "accept-language:zh-cn" URL
+
+# 读取本地文本文件的数据，向服务器发送
+curl -d '@data.txt' https://example.com/upload
+
+# JSON 格式的 POST 请求
+curl -l -H "Content-Type: application/json" -X POST -d '{"phone": "13800138000", "password": "test"}' https://example.com/api/users.json
+
+# 将 Cookie 写入文件
+curl -c cookies.txt https://www.taobao.com
+
+# 上传二进制文件
+# 下面的命令会给 HTTP 请求加上标头 Content-Type: multipart/form-data，然后将文件 photo.png 作为 file 字段上传
+curl -F 'file=@photo.png' https://taobao.com/profile
+
+# 调试参数
+curl -v https://www.example.com
+
+# 获取本机外网 IP
+curl ipecho.net/plain
+
+curl -L ip.tool.lu
+
+```
+
+请求后打印本次请求的统计数据到标准输出
+
+```bash
+curl -w https://www.taobao.com
+```
+
+curl 提供了很多置换变量，可以在格式化字符串中通过 %{var} 的形式使用。完整的变量列表可以在 curl 的 manpage 中查看。简单介绍一下我们使用的这几个变量：
+
+- `url_effective`: 执行完地址重定向之后的最终 URL；
+- `time_namelookup`: 从请求开始至完成名称解析所花的时间，单位为秒，下同；
+- `time_redirect`: 执行所有重定向所花的时间；
+- `time_connect`: 从请求开始至建立 TCP 连接所花的时间；
+- `time_appconnect`: 从请求开始至完成 SSL/SSH 握手所花的时间；
+- `time_pretransfer`: 从请求开始至服务器准备传送文件所花的时间，包含了传送协商时间；
+- `time_starttransfer`: 从请求开始至服务器准备传送第一个字节所花的时间；
+- `time_total`: 完整耗时。
+
+然后执行请求，通过 `@filename` 指定保存了格式化字符串的文件：
+
+```bash
+curl -L -s -w @fmt.txt -o /dev/null https://www.taobao.com
+```
 
 ### wget
 
