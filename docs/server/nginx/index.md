@@ -25,7 +25,7 @@ Nginx 是一个开源且高性能、可靠的 HTTP 中间件，代理服务。Ng
 
 工作线程处理实际的请求。Nginx 使用**基于事件**的模型和**依赖操作系统**的机制来有效地在工作进程之间分发请求。
 
-> worker进程数，一般会设置成机器 CPU 核数。因为更多的 worker 数，只会导致进程相互竞争 CPU，从而带来不必要的上下文切换。
+> worker 进程数，一般会设置成机器 CPU 核数。因为更多的 worker 数，只会导致进程相互竞争 CPU，从而带来不必要的上下文切换。
 > 使用多进程模式，不仅能提高并法率，而且进程之间相互独立，一个 worker 进程挂了不会影响其他 worker 进程。
 
 ### 惊群现象
@@ -62,12 +62,13 @@ rpm -ql nginx
 | `/etc/nginx/mime.types`                                                                                                                               | 配置文件       | 设置 HTTP 协议的 Content-Type 与扩展名对应关系 |
 | `/etc/sysconfig/nginx`<br/>`/etc/sysconfig/nginx-debug`<br/>`/usr/lib/systemd/system/nginx-debug.service`<br/>`/usr/lib/systemd/system/nginx.service` | 配置文件       | 用于配置出系统守护进程管理器管理方式           |
 | `/etc/nginx/modules`<br/>`/usr/lib64/nginx/modules`                                                                                                   | 目录           | nginx 模块目录                                 |
-| `/usr/sbin/nginx`<br/>`/usr/sbin/nginx-debug`                                                                                                         | 命令           | nginx 服务的启动管理的终端命令                 |
+| `/usr/sbin/nginx`<br/>`/usr/sbin/nginx-debug`                                                                                                         | 命令           | nginx 服务的可执行程序文件（终端命令）         |
 | `/usr/share/doc/nginx-1.12.2`<br/>`/usr/share/doc/nginx-1.12.2/COPYRIGHT`<br/>`/usr/share/man/man8/nginx.8.gz`                                        | 文件目录       | nginx 的手册和帮助文件                         |
 | `/var/cache/nginx`                                                                                                                                    | 目录           | nginx 的缓存目录                               |
 | `/var/log/nginx`                                                                                                                                      | 目录           | nginx 的日志目录                               |
+| `/usr/share/nginx/html/404.html`<br/>`/usr/share/nginx/html/50x.html`<br/>`/usr/share/nginx/html/index.html`                                          | 文件           | nginx 默认的静态资源目录                       |
 
-Nginx 及其模块的工作方式由配置文件确定。 默认情况下，配置文件名为 `nginx.conf`，放在 `/usr/local/nginx/conf`、`/etc/nginx` 或者 `/usr/local/etc/nginx` 文件夹中。
+Nginx 及其模块的工作方式由配置文件确定。 默认情况下，配置文件名为 `nginx.conf`，放在 `/etc/nginx/conf.d`、`/usr/local/nginx/conf` 或者 `/usr/local/etc/nginx` 文件夹中。
 
 ## 编译参数
 

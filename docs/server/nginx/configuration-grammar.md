@@ -6,32 +6,25 @@ group:
   title: Nginx
   order: 1
 title: 配置语法
-order: 3
+order: 5
 ---
 
 # 配置语法
 
+更多更详细的配置请查阅：[nginx documentation](http://nginx.org/en/docs/) 或 [Nginx 中文文档](https://www.nginx.cn/doc/)
+
 ## 配置结构
 
-Nginx 配置的核心是定义要处理的 `URL` 以及如何响应这些 `URL` 请求，即定义一系列的 **虚拟服务器（Virtual Servers）** 控制对来自特定域名或者 IP 的请求的处理。
-
-每一个虚拟服务器定义一系列的 `location` 控制处理特定的 URI 集合。每一个 `location` 定义了对映射到自己的请求的处理场景，可以返回一个文件或者代理此请求。
-
-Nginx 由不同的模块组成，这些模块由配置文件中指定的**指令**控制。 指令分为 **简单指令** 和 **块指令**。
-
-一个简单指令包含 **指令名称** 和 **指令参数**，以空格分隔，以分号（`;`）结尾。 块指令与简单指令类似，但是由大括号（`{` 和 `}`）包围。 如果块指令大括号中包含其他指令，则称该指令为上下文（如：[events](#events-块)、[http](#http-块)、[server](#server-块) 和 [location](#location-块)）。
-
-配置文件中的放在上下文之外的指令默认放在主配置文件中（类似继承主配置文件）。`events` 和 `http` 放置在主配置文件中，`server` 放置在 `http` 块指令中，`location` 放置在 `server` 块指令中。
-
-配置文件的注释以 `#` 开始。
+Nginx 配置的核心是定义要处理的 `URL` 以及如何响应这些 `URL` 请求，即定义一系列的 **虚拟服务器（Virtual Servers）** 控制对来自特定域名或者 IP 的请求的处理。每一个虚拟服务器定义一系列的 `location` 控制处理特定的 URI 集合。每一个 `location` 定义了对映射到自己的请求的处理场景，可以返回一个文件或者代理此请求。
 
 ```bash
-# 全局块
+# main 全局块
 
 # Events 块
-events {}
+events { }
 
 # Http 块
+# 配置使用最频繁的部分，代理、缓存、日志定义等绝大多数功能和第三方模块的配置都在这里设置
 http {
 
   # Server 块
@@ -48,11 +41,22 @@ http {
 - `main`：Nginx 的全局配置，对全局生效
 - `events`：配置影响 Nginx 服务器或与用户的网络连接
 - `http`：可以嵌套多个 Server，配置代理、缓存、日志定义等绝大多数功能和第三方模块的配置
-- `server`：配置虚拟主机的相关参数，一个 HTTP 中可以有多个 Server
-- `location`：配置请求的路由，以及各种页面的处理情况
+- `server`：配置虚拟主机的相关参数，一个 HTTP 中可以有多个 `server` 块
+- `location`：用于配置请求的路由，以及各种页面的处理情况
 - `upstream`：配置后端服务器具体地址，负载均衡配置不可或缺的部分
 
-### 全局块
+配置文件的语法规则：
+
+- 配置文件由指定的指令控制，指令分为 **简单指令** 与 **指令块** 构成
+- 简单指令包含 **指令名称** 和 **指令参数**
+- 指令与参数间以空格符号分隔，每条指令以 `;` 分号结尾
+- 指令块以 `{}` 大括号将多条指令组织在一起
+- `include` 语句允许组合多个配置文件以提升可维护性
+- 使用 `#` 符号添加注释，提高可读性
+- 使用 `$` 符号使用变量
+- 部分指令的参数支持正则表达式
+
+## main 全局块
 
 该部分配置用于设置影响 Nginx 全局的指令，通常包括以下几个部分：
 
@@ -63,11 +67,125 @@ http {
 - 配置文件引入
 
 ```nginx
+# 配置运行 Nginx 服务器用户（组）
+user root;
+
+# 错误日志的存放路径
+error_log /var/log/nginx/error.log;
+
+# Nginx 进程 PID 存放路径
+pid /run/nginx.pid;
+
 # 设置工作进程数量
 worker_process 1;
+
+# 配置文件引入
+include /usr/share/nginx/modules/*.conf;
 ```
 
-### events 块
+### user
+
+指定运行 Nginx 的 `woker` 子进程的属主和属组，其中组可以不指定。
+
+```nginx
+user <USERNAME> [GROUP]
+
+# 用户是 nginx; 组是 dev
+user nginx dev;
+```
+
+### pid
+
+指定运行 Nginx `master` 主进程的 `pid` 文件存放路径。
+
+```nginx
+# master 主进程的的 pid 存放在 nginx.pid 的文件
+pid /opt/nginx/logs/nginx.pid
+```
+
+### worker_rlimit_nofile_number
+
+指定 `worker` 子进程可以打开的最大文件句柄数。
+
+```nginx
+# 可以理解成每个 worker 子进程的最大连接数量
+worker_rlimit_nofile 20480;
+```
+
+### worker_rlimit_core
+
+指定 `worker` 子进程异常终止后的 `core` 文件，用于记录分析问题。
+
+```nginx
+# 存放大小限制
+worker_rlimit_core 50M;
+# 存放目录
+working_directory /opt/nginx/tmp;
+```
+
+### worker_processes_number
+
+指定 Nginx 启动的 `worker` 子进程数量。
+
+```nginx
+# 指定具体子进程数量
+worker_processes 4;
+# 与当前cpu物理核心数一致
+worker_processes auto;
+```
+
+### worker_cpu_affinity
+
+将每个 `worker` 子进程与我们的 `cpu` 物理核心绑定。
+
+```nginx
+# 4 个物理核心，4 个 worker 子进程
+worker_cpu_affinity 0001 0010 0100 1000;
+```
+
+将每个 `worker` 子进程与特定 CPU 物理核心绑定，优势在于，避免同一个 `worker` 子进程在不同的 CPU 核心上切换，缓存失效，降低性能。但其并不能真正的避免进程切换。
+
+### worker_priority
+
+指定 `worker` 子进程的 `nice` 值，以调整运行 Nginx 的优先级，通常设定为负值，以优先调用 Nginx。
+
+```nginx
+# 120-10=110，110 就是最终的优先级
+worker_priority -10;
+```
+
+Linux 默认进程的优先级值是 120，值越小越优先； `nice` 定范围为 `-20` 到 `+19` 。
+
+**备注**：应用的默认优先级值是 120 加上 `nice` 值等于它最终的值，这个值越小，优先级越高。
+
+### worker_shutdown_timeout
+
+指定 `worker` 子进程优雅退出时的超时时间。
+
+```nginx
+worker_shutdown_timeout 5s;
+```
+
+### timer_resolution
+
+`worker` 子进程内部使用的计时器精度，调整时间间隔越大，系统调用越少，有利于性能提升；反之，系统调用越多，性能下降。
+
+```nginx
+timer_resolution 100ms;
+```
+
+在 Linux 系统中，用户需要获取计时器时需要向操作系统内核发送请求，有请求就必然会有开销，因此这个间隔越大开销就越小。
+
+### daemon
+
+指定 Nginx 的运行方式，前台还是后台，前台用于调试，后台用于生产。
+
+```nginx
+# 默认是 on，后台运行模式
+daemon off;
+```
+
+## events 块
 
 `events` 块配置影响 Nginx 服务器或与用户的网络连接。有每个进程的最大连接数，选取哪种事件驱动模型处理连接请求，是否允许同时接受多个网路连接，开启多个网络连接序列化等。
 
@@ -89,7 +207,43 @@ events {
 }
 ```
 
-### http 块
+### use
+
+Nginx 使用何种事件驱动模型。
+
+```nginx
+# 不推荐配置它，让 Nginx 自己选择
+use <method>;
+```
+
+`method` 的可选值：
+
+- `select`
+- `poll`
+- `kqueue`
+- `epoll`
+- `/dev/poll`
+- `eventport`
+
+### worker_connections
+
+`worker` 子进程能够处理的最大并发连接数。
+
+```nginx
+# 每个子进程的最大连接数为1024
+worker_connections 1024;
+```
+
+### accept_mutex
+
+是否打开负载均衡互斥锁。
+
+```nginx
+# 默认是 off 关闭的，这里推荐打开
+accept_mutex on;
+```
+
+## http 块
 
 `http` 块可以嵌套多个 `server`，配置代理，缓存，日志定义等绝大多数功能和第三方模块的配置。如文件引入，`mime-type` 定义，日志自定义，是否使用 `sendfile` 传输文件，连接超时时间，单连接请求数等。
 
@@ -149,7 +303,7 @@ http {
 }
 ```
 
-### server 块
+## server 块
 
 `server` 块：配置虚拟主机的相关参数，一个 `http` 中可以有多个 `server`。
 
@@ -177,7 +331,116 @@ server {
 }
 ```
 
-### location 块
+### server_name
+
+指定虚拟主机域名。
+
+```nginx
+server_name <name1> <name2> <name3> ...
+
+# 示例：
+server_name www.nginx.com;
+```
+
+域名匹配的四种写法：
+
+- 精确匹配：`server_name www.nginx.com`
+- 左侧通配：`server_name *.nginx.com`
+- 右侧通配：`server_name www.nginx.*`
+- 正则匹配：`server_name ~^www\.nginx\.*$`
+
+匹配优先级： **精准匹配** > **左侧通配符匹配** > **右侧通配符匹配** > **正则表达式匹配**
+
+`server_name` 配置实例：
+
+1. 配置本地 DNS 解析 `vim /etc/hosts`（macOS 系统）
+
+```bash
+# 添加如下内容，其中 121.42.11.34 是云服务器的 IP 地址
+121.42.11.34 www.nginx-test.com
+121.42.11.34 mail.nginx-test.com
+121.42.11.34 www.nginx-test.org
+121.42.11.34 doc.nginx-test.com
+121.42.11.34 www.nginx-test.cn
+121.42.11.34 fe.nginx-test.club
+```
+
+**注意**：这里使用的是虚拟域名进行测试，因此需要配置本地 DNS 解析，如果使用云服务提供商（例如阿里云）上购买的域名，则需要在云服务提供商上设置好域名解析。
+
+```nginx
+# 这里只列举了 http 端中的 sever 端配置
+
+# 左匹配
+server {
+  listen         80;
+  server_name    *.nginx-test.com;
+  root           /usr/share/nginx/html/nginx-test/left-match/;
+
+  location / {
+    index index.html;
+  }
+}
+
+# 正则匹配
+server {
+  listen         80;
+  server_name    ~^.*\.nginx-test\..*$;
+  root          /usr/share/nginx/html/nginx-test/reg-match/;
+
+  location / {
+    index index.html;
+  }
+}
+
+# 右匹配
+server {
+  listen        80;
+  server_name   www.nginx-test.*;
+  root          /usr/share/nginx/html/nginx-test/right-match/;
+  location / {
+    index index.html;
+  }
+}
+
+# 完全匹配
+server {
+  listen        80;
+  server_name   www.nginx-test.com;
+  root          /usr/share/nginx/html/nginx-test/all-match/;
+  location / {
+    index index.html;
+  }
+}
+
+```
+
+3. 访问分析
+
+- 当访问 `www.nginx-test.com` 时，都可以被匹配上，因此选择优先级最高的完全匹配
+- 当访问 `mail.nginx-test.com` 时，会进行左匹配
+- 当访问 `www.nginx-test.org` 时，会进行右匹配
+- 当访问 `doc.nginx-test.com` 时，会进行左匹配
+- 当访问 `www.nginx-test.cn` 时，会进行右匹配
+- 当访问 `fe.nginx-test.club` 时，会进行正则匹配
+
+### root
+
+指定静态资源目录位置，它可以写在 `http`、`servr`、`location` 块等配置中。
+
+```nginx
+root path;
+
+# 例如
+location /image {
+  root /opt/nginx/static;
+}
+```
+
+当用户访问 `www.test.com/image/1.png` 时，实际在服务器找的路径是 `/opt/nginx/static/image/1.png`。
+
+**注意**：`root` 会将定义路径与 `URI` 叠加，`alias` 则只取定义路径。
+
+## location 块
 
 `location` 块：配置请求的路由，以及各种页面的处理情况。
 
@@ -186,92 +449,256 @@ server {
 - 更改 location 的 URI
 - 网站默认首页配置
 
+### 匹配命令
+
 不同模块指令关系：`server` 继承 `main`；`location` 继承 `server`；`upstream` 既不会继承指令也不会被继承，它有自己的特殊指令，不需要在其他地方的应用
 
 Nginx 的路径分类：
 
-- 普通前端匹配的路径，例如 `location / {}`
-- 抢占式前缀匹配的路径，例如 `location ^~ / {}`
-- 精确匹配的路径，例如 `location = / {}`
-- 命名路径，比如 `location @a {}`
-- 无名路径，比如 `if {}` 或者 `limit_except {}` 生成的路径
+| 参数 | 名称                 | 说明                                                                                                                                | 示例               |
+| :--- | :------------------- | :---------------------------------------------------------------------------------------------------------------------------------- | :----------------- |
+| 空   | 普通前端匹配的路径   | location 后没有参数直接跟着 **标准 URI**，表示前缀匹配，代表跟请求中的 URI 从头开始匹配。                                           | `location / {}`    |
+| `=`  | 精确匹配的路径       | 用于**标准 URI** 前，要求请求字符串与其精准匹配，成功则立即处理，nginx 停止搜索其他匹配。                                           | `location ^~ / {}` |
+| `^~` | 抢占式前缀匹配的路径 | 用于**标准 URI** 前，并要求一旦匹配到就会立即处理，不再去匹配其他的那些个正则 URI，一般用来匹配目录                                 | `location = / {}`  |
+| `~`  | 正则匹配             | 用于**正则 URI** 前，表示 URI 包含正则表达式， **区分**大小写                                                                       | `location @a {}`   |
+| `~*` | 正则匹配             | 用于**正则 URI** 前， 表示 URI 包含正则表达式， **不区分**大小写                                                                    |                    |
+| `@`  | 命名路径             | @ 定义一个命名的 location，@ 定义的 locaiton 名字一般用在内部定向，例如 error_page, try_files 命令中。它的功能类似于编程中的 goto。 |                    |
 
-Nginx location 的大致匹配顺序：
+实例配置：
+
+```nginx
+server {
+  listen  80;
+  server_name www.nginx-test.com;
+
+  # 只有当访问 www.nginx-test.com/match_all/ 时才会匹配到/usr/share/nginx/html/match_all/index.html
+  location = /match_all/ {
+      root  /usr/share/nginx/html
+      index index.html
+  }
+
+  # 当访问 www.nginx-test.com/1.jpg 等路径时会去 /usr/share/nginx/images/1.jpg 找对应的资源
+  location ~ \.(jpeg|jpg|png|svg)$ {
+    root /usr/share/nginx/images;
+  }
+
+  # 当访问 www.nginx-test.com/bbs/ 时会匹配上 /usr/share/nginx/html/bbs/index.html
+  location ^~ /bbs/ {
+    root /usr/share/nginx/html;
+    index index.html index.htm;
+  }
+}
+```
+
+### 匹配优先级
+
+Nginx `location` 的大致匹配顺序：
 
 - 精确匹配的路径和两类前缀匹配的路径（字母序，如果某个精确匹配的路径的名字和前缀匹配的路径相同，精确匹配的路径排在前面）
 - 正则路径（出现序）
 - 命名路径（字母序）
 - 无名路径（出现序）
 
-## 日志
-
-Nginx 中的日志类型包括：
-
-- `access.log`：记录 Nginx 处理的请求的过程，包含请求类型、时间、客户端信息、处理结果、处理时长等信息，具体可以通过 `log_format` 指令引用特定变量来记录相关信息。
-- `error.log`：记录 Nginx 进程启动、停止、重启及处理请求过程中发生的错误信息。
-- `rewrite.log`：记录 rewrite 规则工作的过程，可以用于调试 rewrite 规则
-
-默认情况下回自动记录 access 日志，默认存放路径为 `/usr/local/nginx/logs/access.log`。
-
-Nginx 提供了 `log_format` 指令用于自定义 access 日志的格式，它统一在 HTTP 层级进行配置。
-
-**`log_format` 可使用的变量：**
-
-| 变量名                  | 说明                                                                                                             |
-| :---------------------- | :--------------------------------------------------------------------------------------------------------------- |
-| `$remote_addr`          | 记录客户端 IP 地址                                                                                               |
-| `$http_x_forwarded_for` | 当 Nginx 处于负载均衡器、Squid、反向代理之后时，需要这个字段才能记录用户的实际 IP 地址                           |
-| `$remote_user`          | 记录客户端用户名称，针对启用了用户认证的请求进行记录                                                             |
-| `$request`              | 记录用户请求的 URL                                                                                               |
-| `$status`               | 记录请求结果状态码                                                                                               |
-| `$body_bytes_sent`      | 发送给客户端的字节数，不包括响应头的大小                                                                         |
-| `$bytes_sent`           | 发送给客户端的字节数，不包括响应头的大小                                                                         |
-| `$connection`           | 连接的序列号                                                                                                     |
-| `$msec`                 | 日志写入时间，单位为秒，精度为毫秒                                                                               |
-| `$pipe`                 | 如果请求是通过 HTTP 流水线发送，则其值为 i `p`，否则为 `.`                                                       |
-| `$http_referer`         | 记录从哪个页面链接过来的                                                                                         |
-| `$http_user_agent`      | 记录客户端浏览器相关信息                                                                                         |
-| `$request_length`       | 请求的长度（包括请求行、请求头和主体）                                                                           |
-| `$request_time`         | 请求处理时长，单位为秒，精度为毫秒，从读入客户端的第一个字节开始，知道把最后一个字符发送给客户端进行日志写入为止 |
-| `$time_iso8601`         | 标准格式下的本地时间 `2017-05-24T18:31:27+0800`                                                                  |
-| `$time_local`           | 通过日志格式下的本地时间，形如 `24/May/2017:18:31:27 +0800`                                                      |
-
-常见配置：
+### 反斜线
 
 ```nginx
-# 访问日志
-# access_log [存储路径] [buff=大小] [gzip=压缩级别] [flush=time 刷新时间]
-acess_log /user/local/nginx/logs/access.log buffer=64k flush=1m;
+location /test {
+  ...
+}
 
-log_format combined    '$remote_addr - $remote_user [$time_local]'
-                                         ' "$request"  $status   $body_bytes_sent '
-                                         ' "$http_referer"    "$http_user_agent" ';
-
-# 设置日志文件缓存
-open_log_file_cache max=1000 inactive=20s min_uses=1 valid=60s;
-
-# 是否将 not found 错误记录在 error_log 中
-log_not_found on;
-
-# 在 access_log 在记录子请求的访问日志
-log_subrequest off;
-
-# 记录重写日志，默认关闭，开启后记录在 error_log
-rewrite_log logs/rewrite.log on;
-
-# 记录错误日志
-error_log logs/error.log error;
+location /test/ {
+  ...
+}
 ```
+
+- 不带 `/` 当访问 `www.nginx-test.com/test` 时，Nginx 先找是否有 `test` 目录，如果有则找 `test` 目录下的 `index.html`；如果没有 `test` 目录，Nginx 则会找是否有 `test` 文件
+- 带 `/` 当访问 `www.nginx-test.com/test` 时，Nginx 先找是否有 `test` 目录，如果有则找 `test` 目录下的 `index.html`；如果没有它也不会去找是否存在 `test` 文件
+
+### alias
+
+它也是指定静态资源目录位置，它只能写在 `location` 中。
+
+```nginx
+location /image {
+  alias /opt/nginx/static/image/;
+}
+```
+
+当用户访问 `www.test.com/image/1.png` 时，实际在服务器找的路径是 `/opt/nginx/static/image/1.png`。
+
+**注意**：使用 `alias` 末尾一定要添加 `/`，并且它只能位于 `location` 中。
+
+### return
+
+停止处理请求，直接返回响应码或重定向到其他 URL；执行 `return` 指令后，`location` 中后续指令讲不会被执行。
+
+```nginx
+return code [text];
+return code URL;
+return URL;
+
+# 例如
+location / {
+  # 直接返回状态码
+  return 404;
+}
+
+location / {
+  # 返回状态码 + 一段文本
+  return 404 'page not found';
+}
+
+location / {
+  # 返回状态码 + 重定向地址
+  return 302 /bbs;
+}
+
+location / {
+  # 返回重定向地址
+  return https://www.baidu.com;
+}
+```
+
+### rewrite
+
+根据指定正则表达式匹配规则，重写 `URL`。
+
+仅可在 `servr`、`location` 或 `if`
+
+```nginx
+# 语法
+rewrite <regexp> <content> [flag];
+
+# $1 是前面括号(.*\.jpg)的反向引用
+rewirte /images/(.*\.jpg)$ /pic/$1;
+```
+
+`flag` 可选值的含义：
+
+- `last`：重写后的 `URL` 发起新请求，再次进入 `server` 段，重试 `location` 中的匹配
+- `break`：直接使用冲邂逅的 `URL`，不再匹配其他 `location` 中语句
+- `redirect`：返回 302 临时重定向
+- `permanent`：返回 301 永久重定向
+
+实例：
+
+```nginx
+server{
+  listen 80;
+  # 要在本地 hosts 文件进行配置
+  server_name mrsingsing.com;
+  root html;
+  location /search {
+    rewrite ^/(.*) https://www.google.com redirect;
+  }
+
+  location /images {
+  r ewrite /images/(.*) /pics/$1;
+  }
+
+  location /pics {
+    rewrite /pics/(.*) /photos/$1;
+  }
+
+  location /photos {
+
+  }
+}
+```
+
+按照这个配置我们来分析：
+
+- 当访问 `fe.mrsingsing.club/search` 时，会自动帮我们重定向到 `https://www.google.com`
+- 当访问 `fe.mrsingsing.club/images/1.jpg` 时，第一步重写 `URL` 为 `fe.mrsingsing.club/pics/1.jpg`，找到 `pics` 的 `location`，继续重写 `URL` 为 `fe.mrsingsing.club/photos/1.jpg`，找到 `/photos` 的 `location` 后，去 `html/photos` 目录下寻找 `1.jpg` 静态资源
+
+### if 指令
+
+`if` 指令仅存在于 `server` 和 `location` 块中
+
+```nginx
+# 语法
+if (condition) {}
+
+# 示例
+if($http_user_agent ~ Chrome) {
+  rewrite /(.*)/browser/$1 break;
+}
+```
+
+`condition` 判断条件：
+
+- `$variable` 仅为变量时，值为空或以 0 开头字符串都会被当做 `false` 处理
+- `=` 或 `!=` 相等或不等
+- `~` 正则匹配
+- `!~` 非正则匹配
+- `~*` 正则匹配，不区分大小写
+- `-f` 或 `! -f` 检测文件存在或不存在
+- `-d` 或 `! -d` 检测目录存在或不存在
+- `-e` 或 `! -e` 检测文件、目录、符号链接等存在或不存在
+- `-x` 或 `! -x` 检测文件可以执行或不可执行
+
+```nginx
+server {
+  listen 8080;
+  server_name localhost;
+  root html;
+
+  location / {
+    if ( $uri = "/images/" ) {
+      rewrite (.*) /pics/ break;
+    }
+  }
+}
+```
+
+当访问 `localhost:8080/images/` 时，会进入 `if` 判断里面执行 `rewrite` 命令。
+
+### autoindex
+
+用户请求以 `/` 结尾时，列出目录结构，可以用于快速搭建静态资源下载网站。
+
+配置实例：
+
+```nginx
+server {
+  listen 80;
+  server_name mrsingsing.com;
+
+  location /download/ {
+    root /opt/source;
+
+    # 打开 autoindex，，可选参数有 on | off
+    autoindex on;
+    # 修改为 off，以KB、MB、GB 显示文件大小，默认为 on，以 bytes 显示出⽂件的确切⼤⼩
+    autoindex_exact_size on;
+    # 以 html 的方式进行格式化，可选参数有 html | json | xml
+    autoindex_format html;
+    # 显示的⽂件时间为⽂件的服务器时间。默认为 off，显示的⽂件时间为 GMT 时间
+    autoindex_localtime off;
+  }
+}
+```
+
+当访问 mrsingsing.com/download/ 时，会把服务器 /opt/source/download/ 路径下的文件展示出来。
 
 ## 变量
 
-变量类型：
+Nginx 可以使用变量简化配置与提高配置的灵活性，所有的变量值都可以通过这种方式引用：
 
-- HTTP 请求变量
-- 内置变量
 - 自定义变量
+- 内置预定义变量
 
-### 内置变量
+### 自定义变量
+
+可以在 `server`、`http`、`location` 等标签中使用 `set` 命令（非唯一）声明变量，语法如下：
+
+```nginx
+set $variable value;
+```
+
+注意 Nginx 中的变量必须都以 `$` 开头。
+
+### 内置预定义变量
 
 列出常用的 Nginx 内置变量：
 
@@ -286,13 +713,13 @@ error_log logs/error.log error;
 | `$document_root`        | 针对当前请求的根路径设置值                                                                               |
 | `$document_uri`         | 与 `$uri` 相同                                                                                           |
 | `$host`                 | 请求信息中的 `Host`，如果请求中没有 `Host` 行，则等于设置的服务器名;                                     |
-| `$http_cookie`          | cookie 信息                                                                                              |
+| `$http_cookie`          | Cookie 信息                                                                                              |
 | `$http_referer`         | 来源地址                                                                                                 |
 | `$http_user_agent`      | 客户端代理信息                                                                                           |
 | `$http_via`             | 最后一个访问服务器的 IP 地址                                                                             |
 | `$http_x_forwarded_for` | 相当于网络访问路径。                                                                                     |
 | `$limit_rate`           | 对连接速率的限制                                                                                         |
-| `$remote_addr`          | 客户端地址                                                                                               |
+| `$remote_addr`          | 客户端 `IP` 地址                                                                                         |
 | `$remote_port`          | 客户端端口号                                                                                             |
 | `$remote_user`          | 客户端用户名，认证用                                                                                     |
 | `$request`              | 用户请求信息                                                                                             |
@@ -307,60 +734,6 @@ error_log logs/error.log error;
 | `$server_protocol`      | 请求的协议版本，`HTTP/1.0` 或 `HTTP/1.1`                                                                 |
 | `$uri`                  | 请求的 URI，可能和最初的值有不同，比如经过重定向之类的                                                   |
 
-## 模块
-
-Nginx 中的模块分为：
-
-- 官方模块
-- 第三方模块
-
-### 官方模块
-
-- 基本模块
-  - HTTP Core 模块 [ngx_http_core_module](http://tengine.taobao.org/nginx_docs/cn/docs/http/ngx_http_core_module.html)
-  - HTTP Upstream 模块 [ngx_http_upstream_module]()
-  - HTTP Auth Basic 模块 [ngx_http_auth_basic_module]()
-  - HTTP AutoIndex 模块 [ngx_http_autoindex_module]()
-  - Browser [ngx_http_browser_module]()
-  - Charset [ngx_http_charset_module]()
-  - Empty GIF
-  - FastCGI
-  - Geo
-  - Gzip [ngx_http_gzip_module]()
-  - HTTP Headers 模块 [ngx_http_headers_module](http://tengine.taobao.org/nginx_docs/cn/docs/http/ngx_http_headers_module.html)
-  - HTTP Index 模块 [ngx_http_index_module]()
-  - HTTP Referer 模块 [ngx_http_referer_module]()
-  - HTTP Limit Zone 模块
-  - HTTP Limit Requests 模块 [ngx_http_limit_req_module]()
-  - Log [ngx_http_log_module](http://tengine.taobao.org/nginx_docs/cn/docs/http/ngx_http_log_module.html)
-  - Map\*
-  - Memcached [ngx_http_memcached_module]()
-  - HTTP Proxy 模块 [ngx_http_proxy_module]()
-  - Rewrite
-  - SSI 模块
-  - User ID [ngx_http_userid_module]()
-- 其他模块
-  - HTTP Addition 模块 [ngx_http_addition_module]()
-  - Embedded Perl\*
-  - FLV [ngx_http_flv_module]()
-  - Gzip Precompression
-  - Random Index
-  - GeoIP
-  - Real IP [ngx_http_realip_module]()
-  - SSL [ngx_http_ssl_module]()
-  - Stub Status
-  - Substitution
-  - WebDAV
-  - Google Perftools
-  - XSLT\*
-  - Secure Link
-  - Image Filer [ngx_http_image_filter_module]()
-- 邮件模块
-  - Mail Core 模块 [ngx_mail_core_module]()
-  - Mail Auth 模块 [ngx_mail_auth_http_module]()
-  - Mail Proxy 模块 [ngx_mail_proxy_module]()
-  - Mail SSL 模块 [ngx_mail_ssl_module]()
-
 ## 配置文件目录
 
 - 执行目录 `/usr/local/nginx/sbin/nginx`
@@ -369,10 +742,10 @@ Nginx 中的模块分为：
 - 主要配置文件 `/etc/nginx/nginx.conf` 指向 `/etc/nginx/conf.d/default.conf`
 - 默认站点目录 `/usr/share/nginx/html`
 
----
-
-**参考资料：**
+## 参考资料
 
 - [📖 Nginx Documentation: Alphabetical index of variables](http://nginx.org/en/docs/varindex.html)
 - [📝 Nginx 快速入门配置篇](https://mp.weixin.qq.com/s/1Y-B5HdOB2N8z27X-mWc7w)
+- [📝 一文厘清 Nginx 中的 location 配置](https://segmentfault.com/a/1190000022315733)
+- [📝 一文厘清 Nginx 中的 rewrite 配置](https://segmentfault.com/a/1190000022407797)
 - [📝 Nginx 访问日志切割的三种方法](https://www.jiangexing.cn/355.html)

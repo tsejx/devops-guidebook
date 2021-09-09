@@ -6,7 +6,7 @@ group:
   title: Nginx
   order: 1
 title: 地址重定向
-order: 15
+order: 11
 ---
 
 # 地址重定向
@@ -32,6 +32,8 @@ rewrite ^(.*)$ /pages/maintain.html break;
 | `break`     | 停止 rewrite 检测                                                                 |
 | `redirect`  | 返回 302 临时重定向，地址栏会显示跳转后的地址                                     |
 | `permanent` | 返回 301 永久重定向，地址栏会显示跳转后的地址（浏览器下次直接访问重定向后的地址） |
+
+<br />
 
 ```nginx
 root /opt/app/code;

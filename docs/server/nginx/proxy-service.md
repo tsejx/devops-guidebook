@@ -6,7 +6,7 @@ group:
   title: Nginx
   order: 1
 title: 代理服务器
-order: 5
+order: 8
 ---
 
 # 代理服务器
@@ -117,18 +117,20 @@ server {
         # 跳转重定向配置
         proxy_redirect default;
 
-        # 头信息配置
-        # 请求 Host 传给真正服务器
-        proxy_set_header    Host          $http_host;
+        # 头信息配置（在将客户端请求发送给后端服务器之前，更改来自客户端的请求头信息）
+        # 请求 host 传给真正服务器
+        proxy_set_header    Host              $http_host;
         # 请求 IP 传给真正服务器
-        proxy_set_header    X-Real-IP     $remote_addr;
+        proxy_set_header    X-Real-IP         $remote_addr;
         # 请求协议传给真正服务器
         proxy_set_header    X-Scheme          $scheme;
         proxy_set_header    X-Forward-For     $proxy_add_x_forwarded_for;
 
-        # 超时配置
+        # 超时配置（配置 Nginx 与后端代理服务器尝试建立连接的超时时间）
         proxy_connect_timeout 30;
+        # 配置 Nginx 向后端服务器组发出 read 请求后，等待相应的超时时间
         proxy_send_timeout 60;
+        # 配置 Nginx 向后端服务器组发出 write 请求后，等待相应的超时时间
         proxy_read_timeout 60;
 
         # 缓冲区配置

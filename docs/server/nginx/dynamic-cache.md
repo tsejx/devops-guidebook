@@ -6,7 +6,7 @@ group:
   title: Nginx
   order: 1
 title: 动态缓存
-order: 7
+order: 10
 ---
 
 # 动态缓存

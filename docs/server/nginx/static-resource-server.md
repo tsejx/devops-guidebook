@@ -6,7 +6,7 @@ group:
   title: Nginx
   order: 1
 title: 静态资源服务器
-order: 4
+order: 7
 ---
 
 # 静态资源服务器
@@ -136,14 +136,15 @@ http {
 
 开发过程中难免用到一些成熟的框架，或者插件，这些外部的依赖，有时候体积比较大，导致页面响应缓慢，我们可以用打包工具（Webpack、rollup），将代码进行压缩，以缩小代码体积。 开启 Nginx Gzip 压缩功能。需要注意的是 Gzip 压缩功能需要浏览器跟服务器都支持，即服务器压缩，浏览器解析。
 
-查看浏览器支持情况，确定请求头中的 `Accept-Encoding` 字段。
-
-配置：
+### Nginx 配置 gzip
 
 ```nginx
 server {
-    # 开启gzip 压缩
+    # 开启 gzip 压缩(默认 off)
     gzip on;
+
+    # 设置压缩文件的类型（text/html)
+    gzip_types text/csv text/xml text/css text/plain text/javascript application/javascript application/json application/xml;
 
     # 设置 gzip 所需的 HTTP 协议最低版本（HTTP/1.1, HTTP/1.0）
     gzip_http_version 1.1;
@@ -153,13 +154,51 @@ server {
 
     # 设置压缩的最小字节数， 页面 Content-Length 获取
     gzip_min_length 1000;
-
-    # 设置压缩文件的类型（text/html)
-    gzip_types text/csv text/xml text/css text/plain text/javascript application/javascript application/json application/xml;
 }
 ```
 
+- `gzip_types`：要采用 `gzip` 压缩的 MIME 文件类型，其中 `text/html` 被系统强制启用；
+- `gzip_static`：默认 off，该模块启用后，Nginx 首先检查是否存在请求静态文件的 gz 结尾的文件，如果有则直接返回该 `.gz` 文件内容；
+- `gzip_proxied`：默认 off，Nginx 做为反向代理时启用，用于设置启用或禁用从代理服务器上收到相应内容 `gzip` 压缩；
+- `gzip_vary`：用于在响应消息头中添加 `Vary：Accept-Encoding`，使代理服务器根据请求头中的 `Accept-Encoding` 识别是否启用 `gzip` 压缩；
+- `gzip_comp_level`：`gzip` 压缩比，压缩级别是 1-9，1 压缩级别最低，9 最高，级别越高压缩率越大，压缩时间越长，建议 4-6；
+- `gzip_buffers`：获取多少内存用于缓存压缩结果，16 8k 表示以 `8k*16` 为单位获得；
+- `gzip_min_length`：允许压缩的页面最小字节数，页面字节数从 `header` 头中的 `Content-Length` 中进行获取。默认值是 0，不管页面多大都压缩。建议设置成大于 1k 的字节数，小于 1k 可能会越压越大；
+- `gzip_http_version`：默认 1.1，启用 `gzip` 所需的 HTTP 最低版本；
+
 查看配置是否生效，查看响应头中的 `Content-Encoding` 字段，值为 `gzip`。
+
+注意：一般 `gzip` 的配置建议加上 `gzip_min_length 1k`，否则会因为文件太小，压缩后体积还比压缩之前体积还大，所以最好设置 `1kb` 的文件就不要 `gzip` 压缩了。
+
+### Webpack 的 gzip 配置
+
+当前端项目使用 Webpack 进行打包的时候，也可以开启 gzip 压缩：
+
+```js
+// vue-cli3 的 vue.config.js 文件
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+
+module.exports = {
+  // gzip 配置
+  configureWebpack: config => {
+    if (process.env.NODE_ENV === 'production') {
+      // 生产环境
+      return {
+        plugins: [new CompressionWebpackPlugin({
+          test: /\.js$|\.html$|\.css/,    // 匹配文件名
+          threshold: 10240,               // 文件压缩阈值，对超过10k的进行压缩
+          deleteOriginalAssets: false     // 是否删除源文件
+        })]
+      }
+    }
+  },
+  ...
+}
+```
+
+> 既然已经有 Nginx 的 gzip 压缩了，为什么还需要 Webpack 进行 gzip 压缩？
+
+因为如果全都是使用 Nginx 来压缩文件，会耗费服务器的计算资源，如果服务器的 `gzip_comp_level` 配置的比较高，就更增加服务器的开销，相应增加客户端的请求时间，得不偿失。如果压缩的动作在前端打包的时候就做了，把打包之后的高压缩等级文件作为静态资源放在服务器上，Nginx 会优先查找这些压缩之后的文件返回给客户端，相当于把压缩文件的动作从 Nginx 提前给 Webpack 打包的时候完成，节约了服务器资源，所以一般推介在生产环境应用 Webpack 配置 `gzip` 压缩。
 
 ## 浏览器缓存
 
@@ -302,32 +341,72 @@ location ~ .*\(gif|jpg|jpeg|png)$ {
 
 集群分布式部署建议关闭 Etag，因为每台机器生成的 Hash 是不同的。
 
-## 跨域访问
+## 配置 CORS 跨域访问
 
-本地起 Nginx Server，`server_name` 是 `a.com`。如果现在需要请求线上 `www.b.com` 域下的接口数据，挡在页面直接请求时，浏览器会报错。
+假设有两个域名 `mrsingsing.com` 和 `api.mrsingsing.com`，如果 `mrsingsing.com` 域名想请求 `api.mrsingsing.com` 域名下的资源会因为 `host` 不一致存在跨域的问题。
 
-为了绕开浏览器的跨域安全限制，需要将请求的域名改为 `a.com`。同时约定 URL 规则来表明代理请求的身份，然后 Nginx 通过匹配该规则，将请求代理回原来的域。
+### 反向代理解决跨域
+
+为了绕开浏览器的跨域安全限制，需要将请求的域名由 `api.mrsingsing.com` 改为 `mrsingsing.com`。同时约定 URL 规则来表明代理请求的身份，然后 Nginx 通过匹配该规则，将请求代理回原来的域。
 
 ```nginx
-# 请求跨域，这里约定代理请求 url path 是以 /api/ 开头
+server {
+    listen 9001;
+    server_name mrsingsing.com;
+
+    location / {
+        proxy_pass api.mrsingsing.com;
+    }
+}
+```
+
+这里对静态文件的请求和后端服务的请求都以 `mrsingsing.com` 开始，不易区分，所以通常为了实现对后端服务请求的统一转发，通常我们会约定对后端服务的请求加上 `/api/` 的前缀或者其他的 `path` 来和静态资源的请求加以区分：
+
+```nginx
+# 请求跨域，约定代理后端服务请求 path 以 /api/ 开头
 location ^~/api/ {
-    # 这里重写了请求，将正则匹配中的第一个 () 中 $1 的 path，拼接到真正的请求后面，并用 break 停止后续匹配
+    # 这里重写了请求，讲正则匹配中的一个分组的 path 拼接到真正的请求后面，并用 break 停止后续匹配
     rewrite ^/api/(.*)$ /$1 break;
-    proxy_pass https://www.b.com/;
+    poxy_pass api.mrsingsing.com;
+
+    # 两个域名之间 Cookie 的传递与回写
+    proxy_cookie_domain api.mrsingsing.com mrsingsing.com;
 }
 ```
 
 这样其实是通过 Nginx，用类似于 Hack 的方式规避了浏览器的跨域限制，实现了跨域访问。
 
-或是添加请求头：`Access-Control-Allow-Origin`
+这样，静态资源我们使用 `mrsingsing.com/index.html`，动态资源我们使用 `mrsingsing.com/api/getOrderList`，浏览器页面看起来仍然访问的前端服务器，绕过了浏览器的通源策略，毕竟我们看起来并没有跨域。
+
+### 配置 header 解决跨域
+
+在 Nginx 配置中配置对应二级域名 `api.mrsingsing.com`：
 
 ```nginx
-location ~ .*\.(htm|html)$ {
-    # 允许请求的域名
-    add_header Access-Control-Allow-Origin      http://www.example.com;
-    # 允许请求的方法
-    add_header Access-Control-Allow-Methods     GET,POST,PUT,DELETE,OPTIONS;
-    root                                        /opt/app/code;
+# /etc/nginx/conf.d/api.mrsingsing.com.conf
+
+server {
+    listen       80;
+    server_name  api.mrsingsing.com;
+
+    add_header 'Access-Control-Allow-Origin' $http_origin;                              # 全局变量获得当前请求 origin，带 Cookie 的请求不支持 *（通配符）
+    add_header 'Access-Control-Allow-Credentials' 'true';                               # 为 true 可带上 cookie
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';                     # 允许请求方法
+    add_header 'Access-Control-Allow-Headers' $http_access_control_request_headers;     # 允许请求的 header，可以为 *（通配符）
+    add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+
+    if ($request_method = 'OPTIONS') {
+        add_header 'Access-Control-Max-Age' 1728000;                                    # OPTIONS 请求的有效期，在有效期内不用发出另一条预检请求
+        add_header 'Content-Type' 'text/plain; charset=utf-8';
+        add_header 'Content-Length' 0;
+
+        return 204;  # 200 也可以
+    }
+
+    location / {
+        root  /usr/share/nginx/html/be;
+        index index.html;
+    }
 }
 ```
 

@@ -18,7 +18,7 @@ order: 16
 
 ## 强制跳转
 
-无 www -> 有 www
+### 无 www 跳转至有 www
 
 ```nginx
 server {
@@ -41,7 +41,7 @@ server {
 }
 ```
 
-HTTP -> HTTPS
+#### HTTP 跳转至 HTTPS
 
 HTTP 默认端口强制跳转 HTTPS 配置
 

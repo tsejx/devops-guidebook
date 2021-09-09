@@ -63,11 +63,11 @@ curl -d '@data.txt' https://example.com/upload
 curl -l -H "Content-Type: application/json" -X POST -d '{"phone": "13800138000", "password": "test"}' https://example.com/api/users.json
 
 # 将 Cookie 写入文件
-curl -c cookies.txt https://www.taobao.com
+curl -c cookies.txt https://www.mrsingsing.com
 
 # 上传二进制文件
 # 下面的命令会给 HTTP 请求加上标头 Content-Type: multipart/form-data，然后将文件 photo.png 作为 file 字段上传
-curl -F 'file=@photo.png' https://taobao.com/profile
+curl -F 'file=@photo.png' https://mrsingsing.com/profile
 
 # 调试参数
 curl -v https://www.example.com
@@ -82,7 +82,7 @@ curl -L ip.tool.lu
 请求后打印本次请求的统计数据到标准输出
 
 ```bash
-curl -w https://www.taobao.com
+curl -w https://www.mrsingsing.com
 ```
 
 curl 提供了很多置换变量，可以在格式化字符串中通过 %{var} 的形式使用。完整的变量列表可以在 curl 的 manpage 中查看。简单介绍一下我们使用的这几个变量：
@@ -99,7 +99,7 @@ curl 提供了很多置换变量，可以在格式化字符串中通过 %{var} �
 然后执行请求，通过 `@filename` 指定保存了格式化字符串的文件：
 
 ```bash
-curl -L -s -w @fmt.txt -o /dev/null https://www.taobao.com
+curl -L -s -w @fmt.txt -o /dev/null https://www.mrsingsing.com
 ```
 
 ### wget
@@ -241,10 +241,10 @@ iptables -A INPUT -p tcp --dport 80 -m limit --limit 100/minute --limit-burst 20
 
 ```bash
 # 基本用法
-host taobao.com
+host mrsingsing.com
 
 # 显示详细的 DNS 信息
-host -a taobao.com
+host -a mrsingsing.com
 ```
 
 ### nslookup
@@ -285,13 +285,13 @@ nslookup -debug baidu.com
 
 ```bash
 # 基本用法
-dig taobao.com
+dig mrsingsing.com
 
 # 反向解析
 dig -x 140.205.94.189
 
 # 查看域授权的 DNS 服务器
-dig taobao.com +nssearch
+dig mrsingsing.com +nssearch
 ```
 
 ### ping
@@ -302,7 +302,7 @@ dig taobao.com +nssearch
 # 检查网络联通
 ping xx.xx.xx.xx
 
-ping taobao.com
+ping mrsingsing.com
 ```
 
 ### netstat
