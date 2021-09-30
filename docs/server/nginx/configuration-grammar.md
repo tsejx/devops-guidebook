@@ -427,6 +427,11 @@ server {
 
 指定静态资源目录位置，它可以写在 `http`、`servr`、`location` 块等配置中。
 
+`root` 与 `alias` 的区别主要在于 Nginx 如何解释 `location` 后面的路径的 URI，这会使两者分别以不同的方式将请求映射到服务器文件上。具体来看：
+
+- `root` 的处理结果是：`root` 路径 + `location` 路径
+- `alias` 的处理结果是：使用 `alias` 路径替换 `location` 路径
+
 ```nginx
 root path;
 
@@ -438,7 +443,62 @@ location /image {
 
 当用户访问 `www.test.com/image/1.png` 时，实际在服务器找的路径是 `/opt/nginx/static/image/1.png`。
 
+另一个例子：
+
+```nginx
+server {
+  listen        9001;
+  server_name   localhost;
+  location /hello {
+    root        /usr/local/var/www;
+  }
+}
+```
+
+在请求 `http://localhost:9001/hello` 时，服务器返回的路径地址应该是 `/usr/local/var/www/hello/index.html`。
+
 **注意**：`root` 会将定义路径与 `URI` 叠加，`alias` 则只取定义路径。
+
+### try_files
+
+`try_files` 的作用就是在匹配 location 的路径时，如果没有匹配到对应的路径的话，提供一个回退的方案。
+
+工作原理：按顺序检查文件是否存在，返回第一个找到的文件或文件夹（结尾加斜线表示为文件夹），如果所有的文件或文件夹都找不到，会进行一个内部重定向到最后一个参数。
+
+需要注意的是，只有最后一个参数可以引起一个内部重定向，之前的参数只设置内部 URI 的指向。最后一个参数是回退 URI 且必须存在，否则会出现内部 500 错误。命名的 `location` 也可以使用在最后一个参数中。
+
+示例一：
+
+```ngix
+locaton / {
+  try_files /app/cache/ $uri @fallback;
+  index index.php index.html;
+}
+```
+
+它将检测 `$document_root/app/cache/index.php`、`$document_root/app/cache/index.html` 和 `$document_root$uri` 是否存在，如果不存在将内部重定向到 `@fallback`（`@` 表示配置文件中预定义标记点）。
+
+你也可以使用一个文件或者状态码（`=404`）作为最后一个参数，如果是最后一个参数是文件，那么这个文件必须存在。
+
+在非根路径下使用 `try_files`，当我们希望在 `/test` 路径下部署一个路由使用 History 的 Vue 应用，那么可以使用如下的 Nginx 配置：
+
+```nginx
+server {
+  listen            9001;
+  server_name       localhost;
+  location /test {
+    root            /usr/local/var/www/hello/;
+    index           index.html;
+    try_files       $uri $uri/ /test/index.html;
+  }
+}
+```
+
+这个时候：
+
+- 当 `/test` 路径下的请求，不会收到上面的配置影响
+- 当访问 `/test` 时，会使用 `root` 的匹配规则，到服务器 `/usr/local/var/www/hello/test` 路径下寻找 `index.html` 文件
+- 当访问 `/test/demo1` 时，会使用 `try_files` 的匹配规则，到 `root` 路径下去寻找最后一个参数 `/test/index.html` 的回退方案，也就是说去 `/usr/local/var/www/hello/test` 路径下寻找 `index.html` 文件
 
 ## location 块
 
@@ -749,3 +809,4 @@ set $variable value;
 - [📝 一文厘清 Nginx 中的 location 配置](https://segmentfault.com/a/1190000022315733)
 - [📝 一文厘清 Nginx 中的 rewrite 配置](https://segmentfault.com/a/1190000022407797)
 - [📝 Nginx 访问日志切割的三种方法](https://www.jiangexing.cn/355.html)
+- [📝 Nginx 的 try_files 指令使用实例](https://www.cnblogs.com/zhengchunyuan/p/11281568.html)

@@ -153,6 +153,56 @@ server {
 }
 ```
 
+## 单端口部署多个应用
+
+相同 IP 端口部署多个单页应用（前端应用）的方法。
+
+### 子域名区分
+
+使用子域名区分，此种方法最是简单。但是限制也大，必须要买域名，或者修改访问者电脑的 hosts 文件。
+
+```nginx
+server {
+    listen          80;
+    server_name     test.mrsingsing.com;  #子域名 test 访问时
+    localtion / {
+       root         /usr/local/test;
+       try_files    $uri /index.html index.html;
+    }
+}
+
+server {
+   listen           80;
+   server_name      demo.mrsingsing.com; # 访问子域名 demo 时。
+   location / {
+       root         /usr/local/demo;
+       try_files    $uri /index.html index.html;
+   }
+
+}
+```
+
+### 子路径区分
+
+如果一个域名下有多个项目，那么使用根路径配置就不合适了，我们需要在根路径下指定一层路径。
+
+非根路径配置方式：
+
+```nginx
+location ^~ /admin {
+        # 此处为 admin 的路径
+        alias /usr/local/admin;
+        index index.html;
+        try_files $uri $uri/ /index.html = 404;
+}
+location ^~ /web {
+        # 此处为 web 的路径
+        alias /usr/local/web;
+        index index.html;
+        try_files $uri $uri/ /index.html = 404;
+}
+```
+
 ---
 
 **参考资料：**
