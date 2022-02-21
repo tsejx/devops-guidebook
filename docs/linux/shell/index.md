@@ -38,9 +38,7 @@ CentOS 7 默认使用的 Shell 是 `bash`。
 - 内建命令不需要创建子进程
 - 内建命令对当前 Shell 生效
 
----
-
-**参考资料：**
+## 参考资料
 
 - [Shell 脚本：Linux Shell 脚本学习指南](http://c.biancheng.net/shell/)
 - [TLCL](http://billie66.github.io/TLCL/book/index.html)

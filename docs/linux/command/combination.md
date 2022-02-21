@@ -34,3 +34,24 @@ basename $(pwd)
 # or
 basename $(pwd)
 ```
+
+## MacOS
+
+因 Unix 权限、ACL、文件标志或 SIP 而拒绝对文件进行操作。要完全解锁一个文件。
+
+```bash
+# Remove ACLs from <file>
+sudo chmod -N <file>
+
+# Give everyone read-write permission to file
+sudo chmod ugo+rw <file>
+
+# Clear the user immutable flag from file
+sudo chflags nouchg <file>
+
+# Remove the SIP protection from file
+sudo chflags norestricted <file>
+
+# Remove SIP protection from file
+sudo xattr -d com.apple.rootless <file>
+```

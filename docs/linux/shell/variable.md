@@ -160,43 +160,6 @@ author="Steven"
 export $author
 ```
 
-## 系统环境变量
-
-系统换机功能变量是每个 Shell 打开都可以或得到的变量。
-
-查看环境变量：
-
-```bash
-# 分页查看环境变量配置文件
-env | more
-
-# 查看某个单独变量
-echo $USER
-echo $UID
-echo $PATH
-```
-
-添加命令到当前环境变量路径：
-
-```bash
-# 编写一个 Shell 脚本文件
-vim a.sh
-
-# （脚本文件）内含以下命令
-export "Hello Linux"
-
-# 编写保存后，查看当前脚本文件所在路径
-/root
-
-# 将当前路径添加到 $PAHT
-PAHT= $PATH:/root
-
-# 直接执行脚本文件，输出 "Hello Linux"
-a.sh
-```
-
-提示信息变量 `$PS1`。
-
 ## 特殊变量
 
 - `$0` 当前脚本的文件名
@@ -327,6 +290,77 @@ echo ${2}_
 # 参数替换，如果 $2 取值为空值，将下划线 `_` 为位置二赋值
 echo ${2-_}
 ```
+
+## 系统环境变量
+
+系统环境功能变量是每个 Shell 打开都可以或得到的变量。
+
+查看环境变量：
+
+```bash
+# 查看所有共享的环境变量
+export -p
+
+# 分页查看环境变量配置文件
+env | more
+
+# 查看某个单独变量
+echo $USER
+echo $UID
+echo $PATH
+```
+
+添加命令到当前环境变量路径：
+
+```bash
+# 编写一个 Shell 脚本文件
+vim a.sh
+
+# （脚本文件）内含以下命令
+export "Hello Linux"
+
+# 编写保存后，查看当前脚本文件所在路径
+/root
+
+# 将当前路径添加到 $PAHT
+PAHT= $PATH:/root
+
+# 直接执行脚本文件，输出 "Hello Linux"
+a.sh
+```
+
+提示信息变量 `$PS1`。
+
+### \$HOME
+
+这是一个指向用户目录的系统环境变量。 格式为 `/Users/<username>` 或 `/var/root`（macOS），Linux 系统上为 `/home/<username>`。
+
+```bash
+# mrsingsing 用户
+echo $HOME # /Users/mrsingsing
+# root 用户
+echo $HOME # /var/root
+```
+
+注意：因为大量的程序依赖 `$HOME` 环境变量，所以覆盖系统默认变量时很危险的。所以一般仅在当前 Session 有效。
+
+### \$PATH
+
+`$PATH` 环境变量说简单点就是一个字符串变量，当输入命令的时候 Linux 会去查找 `$PATH` 里面记录的路径。比如在根目录/下可以输入命令 `ls`，在 `/usr` 目录下也可以输入 `ls`，但其实 `ls` 这个命令根本不在这个两个目录下，事实上当你输入命令的时候 Linux 会去 `/bin`、`/usr/bin`、`/sbin` 等目录下面去找你此时输入的命令，而 `$PATH` 的值恰恰就是 `/bin:/sbin:/usr/bin:...`。其中的冒号使目录与目录之间隔开。
+
+#### 新增自定义路径
+
+假设你新安装了一个命令在 `/usr/local/new/bin` 目录下，而你又想像 `ls` 一样在任何地方都使用这个命令，你就需要修改环境变量 `$PATH` 了，准确的说是为 `$PATH` 增加一个值 `/usr/local/new/bin`。
+
+```bash
+export PATH=$PATH:/usr/local/new/bin
+```
+
+该命令使 `$PATH` 自增 `:/usr/local/new/bin`。通常的做法是把这行 Bash 命令写到 `/root/.bashrc` 末尾，然后重新登录 Linux 系统时，新的默认路径就会添加进行。当然这里直接使用 `source /root/.bashrc` 执行这个文件相当于重新登录了。
+
+#### 删除自定义路径
+
+当你发现新增的 `/usr/local/new/bin` 没用的时候，可以修改 `/root/.bashrc` 文件新增的路径，或修改 `/etc/profile` 文件删除你不需要的路径。
 
 ## 环境变量配置文件
 
