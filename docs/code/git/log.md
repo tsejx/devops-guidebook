@@ -54,5 +54,5 @@ git log -p
 ## 查看命令日志
 
 ```bash
-git relog
+git reflog
 ```
