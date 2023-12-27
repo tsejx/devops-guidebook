@@ -590,7 +590,7 @@ location /image {
 
 ### return
 
-停止处理请求，直接返回响应码或重定向到其他 URL；执行 `return` 指令后，`location` 中后续指令讲不会被执行。
+停止处理请求，直接返回响应码或重定向到其他 URL；执行 `return` 指令后，`location` 中后续指令将不会被执行。
 
 ```nginx
 return code [text];
