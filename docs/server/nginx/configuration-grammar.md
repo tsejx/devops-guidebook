@@ -590,7 +590,7 @@ location /image {
 
 ### return
 
-停止处理请求，直接返回响应码或重定向到其他 URL；执行 `return` 指令后，`location` 中后续指令讲不会被执行。
+停止处理请求，直接返回响应码或重定向到其他 URL；执行 `return` 指令后，`location` 中后续指令将不会被执行。
 
 ```nginx
 return code [text];
@@ -636,7 +636,7 @@ rewirte /images/(.*\.jpg)$ /pic/$1;
 `flag` 可选值的含义：
 
 - `last`：重写后的 `URL` 发起新请求，再次进入 `server` 段，重试 `location` 中的匹配
-- `break`：直接使用冲邂逅的 `URL`，不再匹配其他 `location` 中语句
+- `break`：直接使用重写后的 `URL`，不再匹配其他 `location` 中语句
 - `redirect`：返回 302 临时重定向
 - `permanent`：返回 301 永久重定向
 
@@ -653,7 +653,7 @@ server{
   }
 
   location /images {
-  r ewrite /images/(.*) /pics/$1;
+    rewrite /images/(.*) /pics/$1;
   }
 
   location /pics {
