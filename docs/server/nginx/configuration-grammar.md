@@ -653,7 +653,7 @@ server{
   }
 
   location /images {
-  r ewrite /images/(.*) /pics/$1;
+    rewrite /images/(.*) /pics/$1;
   }
 
   location /pics {
