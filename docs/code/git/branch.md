@@ -40,6 +40,23 @@ git branch -v
 git remote update origin --prune
 ```
 
+### 按照特定规则查看分支
+
+```bash
+# 按修改时间排序显示分支
+git for-each-ref --sort=-committerdate
+
+# 把日期也显示出来
+git for-each-ref --sort='-committerdate' --format='*** %(refname)%09%(committerdate)' | sed -e 's-refs/heads/--'
+
+# 如果加上 `refs/heads/` ，可以只显示本地分支
+git for-each-ref --sort='-committerdate' --format='*** %(refname)%09%(committerdate)' refs/heads | sed -e 's-refs/heads/--'
+
+# 加上颜色显示（强烈推荐）
+git for-each-ref --sort=-committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(committerdate:relative)%(color:reset) - %(contents:subject)'
+
+```
+
 ## 新建分支
 
 新建一个分支，但依然**停留在当前分支**。
@@ -113,4 +130,21 @@ git branch -dr origin/branchA
 
 # 删除后推送至远程仓库
 git push origin:<branchname>
+
+# 删除本地分支的同时也删除远程分支（my-branch）
+git branch -D my-branch && git push origin --delete my-branch
+```
+
+### 批量删除分支
+
+注意：
+- `-d`：参数是安全删除（分支未合并时不会删掉）
+- `-D`：参数是强制删除
+
+```bash
+# 删除本地所有以 `feature/` 开头的分支
+git branch | grep 'feature/' | xargs git branch -D
+
+# 删除远程所有以 `feature/` 开头的分支
+git branch -r | grep 'origin/feature/' | sed 's/origin\///' | xargs -I {} git push origin --delete {}
 ```
