@@ -1,0 +1,1079 @@
+{
+  "menus": {
+    "en-US": {
+      "*": [
+        {
+          "path": "/",
+          "title": "DevOps Guidebook - 📚 React 知识图谱 关于概念、技巧、生态、前沿、源码核心",
+          "meta": {
+            "order": 10
+          }
+        }
+      ],
+      "/code": [
+        {
+          "title": "Git",
+          "path": "/code/git",
+          "meta": {},
+          "children": [
+            {
+              "path": "/code/git",
+              "title": "概述",
+              "meta": {
+                "order": 1
+              }
+            },
+            {
+              "path": "/code/git/config",
+              "title": "配置 git config",
+              "meta": {
+                "order": 2
+              }
+            },
+            {
+              "path": "/code/git/help",
+              "title": "帮助 git help",
+              "meta": {
+                "order": 3
+              }
+            },
+            {
+              "path": "/code/git/init",
+              "title": "初始化 git init",
+              "meta": {
+                "order": 4
+              }
+            },
+            {
+              "path": "/code/git/clone",
+              "title": "克隆 git clone",
+              "meta": {
+                "order": 5
+              }
+            },
+            {
+              "path": "/code/git/add",
+              "title": "添加 git add",
+              "meta": {
+                "order": 6
+              }
+            },
+            {
+              "path": "/code/git/status",
+              "title": "状态 git status",
+              "meta": {
+                "order": 7
+              }
+            },
+            {
+              "path": "/code/git/commit",
+              "title": "提交 git commit",
+              "meta": {
+                "order": 8
+              }
+            },
+            {
+              "path": "/code/git/reset",
+              "title": "撤销 git reset",
+              "meta": {
+                "order": 9
+              }
+            },
+            {
+              "path": "/code/git/rm",
+              "title": "删除 git rm",
+              "meta": {
+                "order": 10
+              }
+            },
+            {
+              "path": "/code/git/mv",
+              "title": "移动和重命名 git mv",
+              "meta": {
+                "order": 11
+              }
+            },
+            {
+              "path": "/code/git/branch",
+              "title": "分支 git branch",
+              "meta": {
+                "order": 12
+              }
+            },
+            {
+              "path": "/code/git/checkout",
+              "title": "查看 git checkout",
+              "meta": {
+                "order": 13
+              }
+            },
+            {
+              "path": "/code/git/merge",
+              "title": "合并 git merge",
+              "meta": {
+                "order": 14
+              }
+            },
+            {
+              "path": "/code/git/stash",
+              "title": "储藏 git stash",
+              "meta": {
+                "order": 15
+              }
+            },
+            {
+              "path": "/code/git/tag",
+              "title": "标签 git tag",
+              "meta": {
+                "order": 16
+              }
+            },
+            {
+              "path": "/code/git/fetch",
+              "title": "提取 git fetch",
+              "meta": {
+                "order": 17
+              }
+            },
+            {
+              "path": "/code/git/pull",
+              "title": "拉取 git pull",
+              "meta": {
+                "order": 18
+              }
+            },
+            {
+              "path": "/code/git/push",
+              "title": "推送 git push",
+              "meta": {
+                "order": 19
+              }
+            },
+            {
+              "path": "/code/git/remote",
+              "title": "远程 git remote",
+              "meta": {
+                "order": 20
+              }
+            },
+            {
+              "path": "/code/git/log",
+              "title": "日志 git log",
+              "meta": {
+                "order": 21
+              }
+            },
+            {
+              "path": "/code/git/diff",
+              "title": "差异 git diff",
+              "meta": {
+                "order": 22
+              }
+            },
+            {
+              "path": "/code/git/rebase",
+              "title": "变基 git rebase",
+              "meta": {
+                "order": 23
+              }
+            },
+            {
+              "path": "/code/git/revert",
+              "title": "还原 git revert",
+              "meta": {
+                "order": 24
+              }
+            },
+            {
+              "path": "/code/git/reflog",
+              "title": "操作日志 git reflog",
+              "meta": {
+                "order": 25
+              }
+            },
+            {
+              "path": "/code/git/cherry-pick",
+              "title": "移植 git cherry-pick",
+              "meta": {
+                "order": 26
+              }
+            },
+            {
+              "path": "/code/git/cat-file",
+              "title": "查询 git cat-file",
+              "meta": {
+                "order": 27
+              }
+            },
+            {
+              "path": "/code/git/check-ignore",
+              "title": "排除文件 check-ignore",
+              "meta": {
+                "order": 28
+              }
+            },
+            {
+              "path": "/code/git/commit-tree",
+              "title": "提交对象 commit-tree",
+              "meta": {
+                "order": 29
+              }
+            },
+            {
+              "path": "/code/git/count-objects",
+              "title": "计算 count-objects",
+              "meta": {
+                "order": 30
+              }
+            },
+            {
+              "path": "/code/git/diff-index",
+              "title": "差异索引 diff-index",
+              "meta": {
+                "order": 31
+              }
+            },
+            {
+              "path": "/code/git/for-each-ref",
+              "title": "参考输出 for-each-ref",
+              "meta": {
+                "order": 32
+              }
+            },
+            {
+              "path": "/code/git/ls-files",
+              "title": "文件信息 ls-files",
+              "meta": {
+                "order": 33
+              }
+            },
+            {
+              "path": "/code/git/merge-base",
+              "title": "合并祖先 merge-base",
+              "meta": {
+                "order": 34
+              }
+            },
+            {
+              "path": "/code/git/read-tree",
+              "title": "读入索引 read-tree",
+              "meta": {
+                "order": 35
+              }
+            },
+            {
+              "path": "/code/git/rev-list",
+              "title": "反序列提交 rev-list",
+              "meta": {
+                "order": 36
+              }
+            },
+            {
+              "path": "/code/git/rev-parse",
+              "title": "rev-parse",
+              "meta": {
+                "order": 37
+              }
+            },
+            {
+              "path": "/code/git/show-ref",
+              "title": "show-ref",
+              "meta": {
+                "order": 38
+              }
+            },
+            {
+              "path": "/code/git/symbolic-ref",
+              "title": "symbolic-ref",
+              "meta": {
+                "order": 39
+              }
+            },
+            {
+              "path": "/code/git/update-index",
+              "title": "update-index",
+              "meta": {
+                "order": 40
+              }
+            },
+            {
+              "path": "/code/git/update-ref",
+              "title": "update-ref",
+              "meta": {
+                "order": 41
+              }
+            },
+            {
+              "path": "/code/git/verify-pack",
+              "title": "verify-pack",
+              "meta": {
+                "order": 41
+              }
+            },
+            {
+              "path": "/code/git/write-tree",
+              "title": "write-tree",
+              "meta": {
+                "order": 42
+              }
+            },
+            {
+              "path": "/code/git/git-flow",
+              "title": "工作流",
+              "meta": {
+                "order": 51
+              }
+            },
+            {
+              "path": "/code/git/hooks",
+              "title": "钩子",
+              "meta": {
+                "order": 51
+              }
+            },
+            {
+              "path": "/code/git/extensions",
+              "title": "扩展",
+              "meta": {
+                "order": 99
+              }
+            },
+            {
+              "path": "/code/git/q&a",
+              "title": "Q&A",
+              "meta": {
+                "order": 100
+              }
+            }
+          ]
+        },
+        {
+          "title": "Gitlab",
+          "path": "/code/gitlab",
+          "meta": {},
+          "children": [
+            {
+              "path": "/code/gitlab/gitlab",
+              "title": "GitLab",
+              "meta": {}
+            },
+            {
+              "path": "/code/gitlab/gitlab-flow",
+              "title": "GitLab Flow",
+              "meta": {}
+            }
+          ]
+        }
+      ],
+      "/deploy": [
+        {
+          "title": "部署理论",
+          "meta": {
+            "order": 1,
+            "__fallback": true
+          },
+          "children": [
+            {
+              "path": "/deploy/theory",
+              "title": "基本概述",
+              "meta": {
+                "order": 2
+              }
+            },
+            {
+              "path": "/deploy/theory/environment",
+              "title": "环境区分",
+              "meta": {
+                "order": 2
+              }
+            },
+            {
+              "path": "/deploy/theory/continuous-integration",
+              "title": "持续集成",
+              "meta": {
+                "order": 3
+              }
+            },
+            {
+              "path": "/deploy/theory/continuous-dilivery",
+              "title": "持续交付",
+              "meta": {
+                "order": 4
+              }
+            },
+            {
+              "path": "/deploy/theory/continuous-deployment",
+              "title": "持续部署",
+              "meta": {
+                "order": 5
+              }
+            }
+          ]
+        },
+        {
+          "title": "Docker",
+          "meta": {
+            "order": 2,
+            "__fallback": true
+          },
+          "children": [
+            {
+              "path": "/deploy/docker/overview",
+              "title": "基本概述",
+              "meta": {
+                "order": 1
+              }
+            },
+            {
+              "path": "/deploy/docker/image",
+              "title": "构建镜像",
+              "meta": {
+                "order": 2
+              }
+            },
+            {
+              "path": "/deploy/docker/docker-file",
+              "title": "配置脚本",
+              "meta": {
+                "order": 3
+              }
+            },
+            {
+              "path": "/deploy/docker/container",
+              "title": "操作容器",
+              "meta": {
+                "order": 4
+              }
+            },
+            {
+              "path": "/deploy/docker/storage-patterns-for-persistence",
+              "title": "持久存储模式",
+              "meta": {
+                "order": 6
+              }
+            },
+            {
+              "path": "/deploy/docker/network",
+              "title": "网络通信",
+              "meta": {
+                "order": 7
+              }
+            },
+            {
+              "path": "/deploy/docker/operations-and-monitor",
+              "title": "运维和监控",
+              "meta": {
+                "order": 8
+              }
+            },
+            {
+              "path": "/deploy/docker/docker-compose",
+              "title": "多容器部署",
+              "meta": {
+                "order": 10
+              }
+            },
+            {
+              "path": "/deploy/docker/command",
+              "title": "常用命令",
+              "meta": {
+                "order": 20
+              }
+            },
+            {
+              "path": "/deploy/docker/extensions",
+              "title": "扩展资源",
+              "meta": {
+                "order": 21
+              }
+            },
+            {
+              "path": "/deploy/docker/mongodb",
+              "title": "部署 MongoDB",
+              "meta": {
+                "order": 30
+              }
+            }
+          ]
+        },
+        {
+          "title": "Docker Compose",
+          "meta": {
+            "order": 3,
+            "__fallback": true
+          },
+          "children": [
+            {
+              "path": "/deploy/docker-compose/overview",
+              "title": "概览",
+              "meta": {
+                "order": 1
+              }
+            },
+            {
+              "path": "/deploy/docker-compose/compose-yml-basics",
+              "title": "compose.yml 基本结构",
+              "meta": {
+                "order": 2
+              }
+            },
+            {
+              "path": "/deploy/docker-compose/services",
+              "title": "services 详解",
+              "meta": {
+                "order": 3
+              }
+            },
+            {
+              "path": "/deploy/docker-compose/network-and-volume",
+              "title": "网络与数据持久化",
+              "meta": {
+                "order": 4
+              }
+            },
+            {
+              "path": "/deploy/docker-compose/reuse-and-config",
+              "title": "配置拆分与复用",
+              "meta": {
+                "order": 5
+              }
+            },
+            {
+              "path": "/deploy/docker-compose/practical-cases",
+              "title": "常见组合案例",
+              "meta": {
+                "order": 6
+              }
+            },
+            {
+              "path": "/deploy/docker-compose/practical-details",
+              "title": "实战细节",
+              "meta": {
+                "order": 7
+              }
+            },
+            {
+              "path": "/deploy/docker-compose/build-and-delivery",
+              "title": "构建流程与交付",
+              "meta": {
+                "order": 8
+              }
+            },
+            {
+              "path": "/deploy/docker-compose/advanced-topics",
+              "title": "网络、数据与配置进阶",
+              "meta": {
+                "order": 9
+              }
+            },
+            {
+              "path": "/deploy/docker-compose/deployment-faq-and-comparison",
+              "title": "部署方案、常见问题与对比",
+              "meta": {
+                "order": 10
+              }
+            }
+          ]
+        },
+        {
+          "title": "部署理论",
+          "path": "/deploy/theory",
+          "meta": {},
+          "children": [
+            {
+              "path": "/deploy/theory/blue-green-deployment",
+              "title": "蓝绿部署",
+              "meta": {}
+            },
+            {
+              "path": "/deploy/theory/gray-release",
+              "title": "灰度部署",
+              "meta": {}
+            },
+            {
+              "path": "/deploy/theory/rolling-update",
+              "title": "滚动部署",
+              "meta": {}
+            }
+          ]
+        }
+      ],
+      "/devops": [
+        {
+          "title": "DevOps",
+          "meta": {
+            "order": 1,
+            "__fallback": true
+          },
+          "children": [],
+          "path": "/devops/devops"
+        },
+        {
+          "title": "扩展资料",
+          "meta": {
+            "order": 100,
+            "__fallback": true
+          },
+          "children": [
+            {
+              "path": "/devops/extensions/extensions",
+              "title": "扩展资料",
+              "meta": {
+                "order": 100
+              }
+            },
+            {
+              "path": "/devops/extensions/open-source",
+              "title": "开源项目",
+              "meta": {
+                "order": 101
+              }
+            }
+          ]
+        },
+        {
+          "title": "扩展资料",
+          "path": "/devops/extensions",
+          "meta": {},
+          "children": [
+            {
+              "path": "/devops/extensions/utils",
+              "title": "实用工具",
+              "meta": {}
+            }
+          ]
+        }
+      ],
+      "/linux": [
+        {
+          "title": "Linux 系统",
+          "meta": {
+            "order": 1,
+            "__fallback": true
+          },
+          "children": [
+            {
+              "path": "/linux",
+              "title": "基本概要",
+              "meta": {
+                "order": 1
+              }
+            },
+            {
+              "path": "/linux/common-directory",
+              "title": "常见目录",
+              "meta": {
+                "order": 2
+              }
+            },
+            {
+              "path": "/linux/process",
+              "title": "进程",
+              "meta": {
+                "order": 3
+              }
+            },
+            {
+              "path": "/linux/file-permission",
+              "title": "文件权限",
+              "meta": {
+                "order": 4
+              }
+            },
+            {
+              "path": "/linux/package",
+              "title": "软件包",
+              "meta": {
+                "order": 5
+              }
+            },
+            {
+              "path": "/linux/firewall",
+              "title": "防火墙",
+              "meta": {
+                "order": 6
+              }
+            }
+          ]
+        },
+        {
+          "title": "常用命令",
+          "meta": {
+            "order": 1,
+            "__fallback": true
+          },
+          "children": [
+            {
+              "path": "/linux/command/environment-variable",
+              "title": "环境变量",
+              "meta": {
+                "order": 100
+              }
+            }
+          ]
+        },
+        {
+          "title": "命令分类",
+          "meta": {
+            "order": 1,
+            "__fallback": true
+          },
+          "children": [
+            {
+              "path": "/linux/command/system",
+              "title": "系统管理",
+              "meta": {
+                "order": 1
+              }
+            },
+            {
+              "path": "/linux/command/network",
+              "title": "网络管理",
+              "meta": {
+                "order": 2
+              }
+            },
+            {
+              "path": "/linux/command/file",
+              "title": "文件管理",
+              "meta": {
+                "order": 3
+              }
+            },
+            {
+              "path": "/linux/command/directory",
+              "title": "目录管理",
+              "meta": {
+                "order": 4
+              }
+            },
+            {
+              "path": "/linux/command/devices",
+              "title": "设备管理",
+              "meta": {
+                "order": 5
+              }
+            },
+            {
+              "path": "/linux/command/package",
+              "title": "软件包管理",
+              "meta": {
+                "order": 6
+              }
+            },
+            {
+              "path": "/linux/command/other",
+              "title": "其他命令",
+              "meta": {
+                "order": 7
+              }
+            },
+            {
+              "path": "/linux/command/combination",
+              "title": "命令组合",
+              "meta": {
+                "order": 19
+              }
+            },
+            {
+              "path": "/linux/command/collection",
+              "title": "命令大全",
+              "meta": {
+                "order": 20
+              }
+            }
+          ]
+        },
+        {
+          "title": "Shell 编程",
+          "meta": {
+            "order": 5,
+            "__fallback": true
+          },
+          "children": [
+            {
+              "path": "/linux/shell",
+              "title": "概述",
+              "meta": {
+                "order": 1
+              }
+            },
+            {
+              "path": "/linux/shell/variable",
+              "title": "变量",
+              "meta": {
+                "order": 2
+              }
+            },
+            {
+              "path": "/linux/shell/type",
+              "title": "类型",
+              "meta": {
+                "order": 3
+              }
+            },
+            {
+              "path": "/linux/shell/command",
+              "title": "命令",
+              "meta": {
+                "order": 4
+              }
+            },
+            {
+              "path": "/linux/shell/structured-command",
+              "title": "结构化命令",
+              "meta": {
+                "order": 5
+              }
+            },
+            {
+              "path": "/linux/shell/function",
+              "title": "函数",
+              "meta": {
+                "order": 6
+              }
+            },
+            {
+              "path": "/linux/shell/sign",
+              "title": "特殊符号",
+              "meta": {
+                "order": 10
+              }
+            }
+          ]
+        },
+        {
+          "title": "Shell 编程",
+          "path": "/linux/shell",
+          "meta": {},
+          "children": [
+            {
+              "path": "/linux/shell/expression",
+              "title": "表达式",
+              "meta": {}
+            },
+            {
+              "path": "/linux/shell/shell-control",
+              "title": "脚本控制",
+              "meta": {}
+            },
+            {
+              "path": "/linux/shell/tools",
+              "title": "实用工具",
+              "meta": {}
+            }
+          ]
+        }
+      ],
+      "/server": [
+        {
+          "title": "Nginx",
+          "meta": {
+            "order": 1,
+            "__fallback": true
+          },
+          "children": [
+            {
+              "path": "/server/nginx",
+              "title": "基本概要",
+              "meta": {
+                "order": 1
+              }
+            },
+            {
+              "path": "/server/nginx/install",
+              "title": "安装教程",
+              "meta": {
+                "order": 2
+              }
+            },
+            {
+              "path": "/server/nginx/command-line",
+              "title": "命令行指令",
+              "meta": {
+                "order": 4
+              }
+            },
+            {
+              "path": "/server/nginx/configuration-grammar",
+              "title": "配置语法",
+              "meta": {
+                "order": 5
+              }
+            },
+            {
+              "path": "/server/nginx/modules",
+              "title": "配置模块",
+              "meta": {
+                "order": 6
+              }
+            },
+            {
+              "path": "/server/nginx/static-resource-server",
+              "title": "静态资源服务器",
+              "meta": {
+                "order": 7
+              }
+            },
+            {
+              "path": "/server/nginx/proxy-service",
+              "title": "代理服务器",
+              "meta": {
+                "order": 8
+              }
+            },
+            {
+              "path": "/server/nginx/load-balance",
+              "title": "负载均衡",
+              "meta": {
+                "order": 9
+              }
+            },
+            {
+              "path": "/server/nginx/dynamic-cache",
+              "title": "动态缓存",
+              "meta": {
+                "order": 10
+              }
+            },
+            {
+              "path": "/server/nginx/rewrite",
+              "title": "地址重定向",
+              "meta": {
+                "order": 11
+              }
+            },
+            {
+              "path": "/server/nginx/https-service",
+              "title": "HTTPS 服务",
+              "meta": {
+                "order": 16
+              }
+            },
+            {
+              "path": "/server/nginx/log",
+              "title": "访问日志",
+              "meta": {
+                "order": 19
+              }
+            },
+            {
+              "path": "/server/nginx/architect",
+              "title": "架构原理",
+              "meta": {
+                "order": 20
+              }
+            },
+            {
+              "path": "/server/nginx/practical-configuration",
+              "title": "实用配置",
+              "meta": {
+                "order": 20
+              }
+            },
+            {
+              "path": "/server/nginx/best-practice",
+              "title": "最佳实践",
+              "meta": {
+                "order": 80
+              }
+            }
+          ]
+        },
+        {
+          "title": "ELK",
+          "meta": {
+            "order": 3,
+            "__fallback": true
+          },
+          "children": [
+            {
+              "path": "/server/elk",
+              "title": "ELK",
+              "meta": {
+                "order": 1
+              }
+            },
+            {
+              "path": "/server/elk/elasticsearch",
+              "title": "Elasticsearch",
+              "meta": {
+                "order": 2
+              }
+            },
+            {
+              "path": "/server/elk/logstash",
+              "title": "Logstash",
+              "meta": {
+                "order": 3
+              }
+            },
+            {
+              "path": "/server/elk/filebeat",
+              "title": "Filebeat",
+              "meta": {
+                "order": 4
+              }
+            },
+            {
+              "path": "/server/elk/kibana",
+              "title": "Kibana",
+              "meta": {
+                "order": 4
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "locales": [
+    {
+      "name": "en-US",
+      "label": "English"
+    }
+  ],
+  "navs": {
+    "en-US": [
+      {
+        "title": "Linux",
+        "order": 1,
+        "path": "/linux"
+      },
+      {
+        "title": "服务器",
+        "order": 2,
+        "path": "/server"
+      },
+      {
+        "title": "部署",
+        "order": 4,
+        "path": "/deploy"
+      },
+      {
+        "title": "代码管理",
+        "order": 5,
+        "path": "/code"
+      },
+      {
+        "title": "DevOps",
+        "order": 6,
+        "path": "/devops"
+      },
+      {
+        "title": "Github",
+        "path": "https://github.com/tsejx/devops-guidebook"
+      }
+    ]
+  },
+  "title": "DevOps Guidebook",
+  "logo": "http://img.mrsingsing.com/devops-icon.png",
+  "description": "DevOps 完全知识体系",
+  "mode": "site",
+  "repository": {
+    "url": "https://github.com/tsejx/devops-guidebook",
+    "branch": "master"
+  },
+  "theme": {},
+  "exportStatic": {}
+}

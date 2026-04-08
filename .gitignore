@@ -1,7 +1,7 @@
 node_modules/
 todo.md
 .DS_Store
-todo/
+todos/
 .umi/
 dist/
 .temp/
